@@ -5,8 +5,6 @@ int main(int argc, char* argv[]) {
 
     std::string op = argv[2];
 
-    
-
     // Perform the operation based on the operator
     if (op == "-publish")
     {
