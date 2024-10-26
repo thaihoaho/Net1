@@ -1,7 +1,12 @@
-// #include "include/request.cpp"
-// #include "include/command.cpp"
 #include "include/INFO.h"
+
+sockInfo listenSock;
+mutex mtx;
+
 char *SHARE_BUFFER;
+const char* LISTEN_IP = "127.0.0.1";
+const int LISTEN_PORT = 8080;
+
 
 int main(int argc, char *argv[])
 {

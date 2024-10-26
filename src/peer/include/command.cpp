@@ -1,5 +1,5 @@
 // this file use to handle all command that user uses
-#include "feature.cpp"
+#include "INFO.h"
 
 // receive data of reveiver
 void waitData(SOCKET *socket)

@@ -1,5 +1,5 @@
 // this file use to handle all request from peer and tracker
-#include "feature.cpp"
+#include "INFO.h"
 
 // send data of sender
 void sendData(SOCKET *sendedSocket, char* path, int pieceSize, int pieceOffset)
@@ -44,7 +44,7 @@ void listenRequest()
         if (strcmp(requestID, "1111111111") == 0)
         {
             printf("Thread of server receive %i bytes\n%s\n", bytesRead, buffer);
-            sendData(&clientSocket, "files/aa.txt", 4, 0);
+            sendData(&clientSocket, (char*)"files/aa.txt", 4, 0);
         }
     }
 }
