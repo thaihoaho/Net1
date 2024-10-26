@@ -1,0 +1,1 @@
+g++ -o peer peer.cpp include/command.cpp include/feature.cpp include/request.cpp -lw2_32
