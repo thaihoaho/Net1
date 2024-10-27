@@ -51,7 +51,6 @@ void handleRequest(SOCKET *clientSocket, char *buffer, char* client_ip, int clie
         char hashinfo[HASHINFO_LENGTH + 1];
         strncpy(hashinfo, buffer + REQUEST_ID_LENGTH, HASHINFO_LENGTH);
         hashinfo[HASHINFO_LENGTH] = '\0';
-        printf("Receive publish request with hashinfo: %s\n", hashinfo);
 
         vector<peerAddress*> listpeer = hashtable[hashinfo];
     }

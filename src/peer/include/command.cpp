@@ -13,6 +13,9 @@ void waitData(SOCKET *socket)
     strncpy(requestID, buffer, REQUEST_ID_LENGTH);
     requestID[REQUEST_ID_LENGTH] = '\0';
 
+    //TODO
+    // chia ca truong hop nhan thong tin
+
 
     if (bytesRead <= 0)
     {

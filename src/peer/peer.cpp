@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
                 continue;
             }
             //TODO
+            //doc file path va lay thong tin cua file va them vao buffer gui len cho tracker
 
             thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, const_cast<char*>(PUBLISH_REQUEST)).detach();
         }
