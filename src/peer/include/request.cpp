@@ -12,6 +12,8 @@ void sendData(SOCKET *sendedSocket, char* path, int pieceSize, int pieceOffset)
 
     int bytesSent = send(*sendedSocket, buffer, pieceSize, 0);
 
+    //TODO
+
     while (bytesSent <= 0)
     {
         printf("Send error");
@@ -46,5 +48,8 @@ void listenRequest()
             printf("Thread of server receive %i bytes\n%s\n", bytesRead, buffer);
             sendData(&clientSocket, (char*)"files/aa.txt", 4, 0);
         }
+
+
+
     }
 }

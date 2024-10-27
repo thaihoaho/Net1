@@ -51,7 +51,6 @@ int main(int argc, char *argv[])
             }
             //TODO
             //doc file path va lay thong tin cua file va them vao buffer gui len cho tracker
-
             thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, const_cast<char*>(PUBLISH_REQUEST)).detach();
         }
         else if (command == "down"){
@@ -63,6 +62,7 @@ int main(int argc, char *argv[])
             }
             char* content = new char[remainContent.length() + 1];
             strcpy(content,remainContent.c_str());
+            //TODO
             thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, content).detach();
         }
         else{

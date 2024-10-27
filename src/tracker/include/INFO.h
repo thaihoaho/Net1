@@ -39,4 +39,7 @@ extern const int SERVER_LISTEN_PORT;
 
 sockInfo createSockAddr(char *ip, int port);
 sockInfo init(char *ip, int port);
+
+void listenRequest();
+void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset);
 #endif
