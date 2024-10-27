@@ -1,0 +1,4 @@
+compile peer
+g++ -o peer peer.cpp include/command.cpp include/feature.cpp include/request.cpp -lws2_32
+compile tracker
+g++ -o tracker tracker.cpp include/feature.cpp -lws2_32
