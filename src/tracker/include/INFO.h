@@ -9,6 +9,7 @@
 #include <fstream>
 #include <mutex>
 #include <unordered_map>
+#include <vector>
 
 #pragma comment(lib, "ws2_32.lib")
 using namespace std;

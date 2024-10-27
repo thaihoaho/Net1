@@ -78,10 +78,10 @@ int main(int argc, char *argv[])
             cerr << "Accept failed: " << WSAGetLastError() << endl;
             continue;
         }
-        char buffer[1024] = {0};
+        char* buffer = new char[1024];
         int bytesRead = recv(clientSocket, buffer, 1024, 0);
 
-        thread(handleRequest,clientSocket, buffer).detach();
+        thread(handleRequest,&clientSocket, buffer,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT).detach();
     }
 
     return 0;

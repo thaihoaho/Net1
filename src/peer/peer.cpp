@@ -28,8 +28,7 @@ int main(int argc, char *argv[])
     while (true)
     {
         string input;
-        cout << ">>";
-        cin >> input;
+        getline(cin,input);
 
         int index = input.find(' ');
         string command = input.substr(0, index);
@@ -40,7 +39,7 @@ int main(int argc, char *argv[])
         }
         else if (command == "fetch")
         {
-            thread(sendRequest,SERVER_LISTEN_IP, SERVER_LISTEN_PORT,FETCH_REQUEST);
+            thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,const_cast<char*>(FETCH_REQUEST)).detach();
         }
         else if (command == "publish")
         {
@@ -52,7 +51,7 @@ int main(int argc, char *argv[])
             }
             // TODO
 
-            thread(sendRequest,SERVER_LISTEN_IP, SERVER_LISTEN_PORT, PUBLISH_REQUEST );
+            thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, const_cast<char*>(PUBLISH_REQUEST)).detach();
         }
         else if (command == "down"){
             string remainContent = PUBLISH_REQUEST +  (input.substr(index + 1, input.length() - index - 1) + '\0');          
@@ -61,7 +60,9 @@ int main(int argc, char *argv[])
                 printf("command error!\n");
                 continue;
             }
-            thread(sendRequest,SERVER_LISTEN_IP, SERVER_LISTEN_PORT, remainContent );
+            char* content = new char[remainContent.length() + 1];
+            strcpy(content,remainContent.c_str());
+            thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, content).detach();
         }
         else{
             printf("Command \"%s\" undefined!!\n",command.c_str());
