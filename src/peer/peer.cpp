@@ -1,12 +1,13 @@
 #include "include/INFO.h"
+#include "../file.h"
 
 sockInfo listenSock;
 mutex mtx;
 
-char *SHARE_BUFFER;
 const char* LISTEN_IP = "127.0.0.1";
 const int LISTEN_PORT = 8080;
 
+char *SHARE_BUFFER;
 
 int main(int argc, char *argv[])
 {
@@ -18,29 +19,52 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // Listen thread to listen all request of another peer
     listenSock = init((char *)LISTEN_IP, LISTEN_PORT);
-
     thread(listenRequest).detach();
 
+    // Command-shell interpreter
     printf("Type \"help\" to get infomation\n");
     while (true)
     {
         string input;
+        cout << ">>";
         cin >> input;
 
-        if (input == "help")
+        int index = input.find(' ');
+        string command = input.substr(0, index);
+        
+        if (command == "help")
         {
-            printf("help request");
+            printf("Help request\n");
         }
-        else if (input == "fetch")
+        else if (command == "fetch")
         {
-            printf("fetch request");
+            thread(sendRequest,SERVER_LISTEN_IP, SERVER_LISTEN_PORT,FETCH_REQUEST);
         }
-        else if (input == "sen")
+        else if (command == "publish")
         {
-            printf("resquest send file\n");
-            char *request = (char *)"1111111111";
-            thread(sendRequest,(char*)LISTEN_IP,8070,request).detach();
+            string path = (input.substr(index + 1, input.length() - index - 1) + '\0');
+            if(path.find(' ') != -1)
+            {
+                printf("command error!\n");
+                continue;
+            }
+            // TODO
+
+            thread(sendRequest,SERVER_LISTEN_IP, SERVER_LISTEN_PORT, PUBLISH_REQUEST );
+        }
+        else if (command == "down"){
+            string remainContent = PUBLISH_REQUEST +  (input.substr(index + 1, input.length() - index - 1) + '\0');          
+            if(remainContent.find(' ') != -1)
+            {
+                printf("command error!\n");
+                continue;
+            }
+            thread(sendRequest,SERVER_LISTEN_IP, SERVER_LISTEN_PORT, remainContent );
+        }
+        else{
+            printf("Command \"%s\" undefined!!\n",command.c_str());
         }
     }
 
