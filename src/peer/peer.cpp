@@ -43,13 +43,13 @@ int main(int argc, char *argv[])
         }
         else if (command == "publish")
         {
-            string path = (input.substr(index + 1, input.length() - index - 1) + '\0');
-            if(path.find(' ') != -1)
+            string name = (input.substr(index + 1, input.length() - index - 1) + '\0');
+            if(name.find(' ') != -1)
             {
                 printf("command error!\n");
                 continue;
             }
-            // TODO
+            //TODO
 
             thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, const_cast<char*>(PUBLISH_REQUEST)).detach();
         }

@@ -1,15 +1,19 @@
 // this file use to handle all command that user uses
 #include "INFO.h"
-
+#include "../../file.h"
 // receive data of reveiver
 void waitData(SOCKET *socket)
 {
     lock_guard<mutex> lock(mtx);
     char buffer[1024] = {0};
     int bytesRead = recv(*socket, buffer, sizeof(buffer) - 1, 0);
-
-
     // DO HERE
+    
+    char requestID[REQUEST_ID_LENGTH + 1];
+    strncpy(requestID, buffer, REQUEST_ID_LENGTH);
+    requestID[REQUEST_ID_LENGTH] = '\0';
+
+
     if (bytesRead <= 0)
     {
         cerr << "Receive failed: " << WSAGetLastError() << endl;

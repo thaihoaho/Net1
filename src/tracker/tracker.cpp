@@ -13,28 +13,28 @@ void handleRequest(SOCKET *clientSocket, char *buffer, char* client_ip, int clie
     strncpy(requestID, buffer, REQUEST_ID_LENGTH);
     requestID[REQUEST_ID_LENGTH] = '\0';
     // receive request send file
-    if (strcmp(requestID, PUBLISH_REQUEST))
+    if (!strcmp(requestID, PUBLISH_REQUEST))
     { // publish file
         int buffersize = sizeof(buffer) / sizeof(buffer[0]);
         // HASHINFO
         char hashinfo[HASHINFO_LENGTH + 1];
         strncpy(hashinfo, buffer + REQUEST_ID_LENGTH, HASHINFO_LENGTH);
         hashinfo[HASHINFO_LENGTH] = '\0';
-        printf("Receive publish request with hashinfo: %s\n", hashinfo);
+        printf("Receive publish request with hashinfo: %s\n", buffer);
         // more info
-        char *remaining = buffer + REQUEST_ID_LENGTH + HASHINFO_LENGTH;
-        char *name = strtok(remaining, " ");
-        char *filesize = strtok(nullptr, " ");
-        char *piececount = strtok(nullptr, " ");
-        char *piecesize = strtok(nullptr, " ");
-        char *fileinfo = strtok(nullptr, " ");
+        // char *remaining = buffer + REQUEST_ID_LENGTH + HASHINFO_LENGTH;
+        // char *name = strtok(remaining, " ");
+        // char *filesize = strtok(nullptr, " ");
+        // char *piececount = strtok(nullptr, " ");
+        // char *piecesize = strtok(nullptr, " ");
+        // char *fileinfo = strtok(nullptr, " ");
 
-        hashtable[hashinfo].push_back(new peerAddress(client_ip, client_port));
+        // hashtable[hashinfo].push_back(new peerAddress(client_ip, client_port));
         // ADD INFO DATA BASE FILE WITH HASH CODE
 
         // DO HERE
     }
-    else if (strcmp(requestID, FETCH_REQUEST))
+    else if (!strcmp(requestID, FETCH_REQUEST))
     { // get all files on system
       // DO HERE
         char buffer[1024] = {0};
@@ -45,7 +45,7 @@ void handleRequest(SOCKET *clientSocket, char *buffer, char* client_ip, int clie
             return;
         }
     }
-    else if(strcmp(requestID, DOWN_REQUEST)){
+    else if(!strcmp(requestID, DOWN_REQUEST)){
         int buffersize = sizeof(buffer) / sizeof(buffer[0]);
         // HASHINFO
         char hashinfo[HASHINFO_LENGTH + 1];
@@ -81,7 +81,8 @@ int main(int argc, char *argv[])
         char* buffer = new char[1024];
         int bytesRead = recv(clientSocket, buffer, 1024, 0);
 
-        thread(handleRequest,&clientSocket, buffer,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT).detach();
+        // thread(handleRequest,&clientSocket, buffer,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT).detach();
+        handleRequest(&clientSocket,buffer,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT);
     }
 
     return 0;
