@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
     while (true)
     {
         string input;
+        cout << ">>";
         getline(cin,input);
 
         int index = input.find(' ');
@@ -27,7 +28,9 @@ int main(int argc, char *argv[])
         {
             printf("Help request\n");
         }
-        // TODO
+        else if(command == "ping"){
+            
+        }
     }
 
     return 0;

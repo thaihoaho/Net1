@@ -32,7 +32,13 @@ int main(int argc, char *argv[])
         }
         else if (command == "fetch")
         {
-            thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,const_cast<char*>(FETCH_REQUEST)).detach();
+            char request[1024] = {0};
+            strcat(request,FETCH_REQUEST);
+            strcat(request," ");
+            strcat(request, LISTEN_IP);
+            strcat(request," ");
+            strcat(request, to_string(LISTEN_PORT).c_str());
+            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,request);
         }
         else if (command == "publish")
         {
@@ -45,9 +51,13 @@ int main(int argc, char *argv[])
 
             char request[1024] = {0};
             strcat(request,PUBLISH_REQUEST);
-            strcat(request, "0000000000a.txt 20 20 12134");
+            strcat(request," ");
+            strcat(request, LISTEN_IP);
+            strcat(request," ");
+            strcat(request, to_string(LISTEN_PORT).c_str());
+            strcat(request, " 0000000000 a.txt 20 20 12134");
 
-            thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request).detach();
+            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request);
         }
         else if (command == "down"){
             string remainContent = PUBLISH_REQUEST +  (input.substr(index + 1, input.length() - index - 1) + '\0');          
