@@ -37,24 +37,33 @@ void listenRequest()
         }
         char buffer[1024] = {0};
         int bytesRead = recv(clientSocket, buffer, 1024, 0);
+        std::string str(buffer);
+        std::istringstream iss(str);
 
-        // check request with first 10 b    its
-        char requestID[11];
-        strncpy(requestID, buffer, 10);
-        requestID[10] = '\0';
+        std::string number1, name, number2, number3;
+
+        std::getline(iss, number1, '-');
+        std::getline(iss, name, '-');
+        std::getline(iss, number2, '-');
+        std::getline(iss, number3, '-');
+
+        const char* requestID = number1.c_str();
+
         // receive request send file
         if (strcmp(requestID, "1111111111") == 0)
         {
             printf("Thread of server receive %i bytes\n%s\n", bytesRead, buffer);
-            char* fileName  = buffer;
-            int offset = 0;
-            //sendData(&clientSocket, fileName, 4, 0);
-            sendFileNthread(clientSocket, fileName, offset, 939171);
+            const char* fileName  = name.c_str();
+            int offset = stoi(number2);
+            int partSize = stoi(number3); 
+            sendFileNthread(&clientSocket, fileName, offset, partSize);
         }
     }
 }
 
-void sendFileNthread(SOCKET clientSocket, const char *filePath, int offset, long required) {
+void sendFileNthread(SOCKET* clientSocket, const char *filePath, int offset, long required) {
+    //  std::string filePath = "files/";
+    // filePath += fileName;
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
         std::cerr << "Could not open file: " << filePath << std::endl;
@@ -68,7 +77,7 @@ void sendFileNthread(SOCKET clientSocket, const char *filePath, int offset, long
         int totalBytesSent = 0;
 
         while (totalBytesSent < bytesRead) {
-            int bytesSent = send(clientSocket, buffer + totalBytesSent, bytesRead - totalBytesSent, 0);
+            int bytesSent = send(*clientSocket, buffer + totalBytesSent, bytesRead - totalBytesSent, 0);
             if (bytesSent == SOCKET_ERROR) {
                 std::cerr << "Error sending file chunk." << std::endl;
                 return;
@@ -79,4 +88,5 @@ void sendFileNthread(SOCKET clientSocket, const char *filePath, int offset, long
         required -= totalBytesSent;
     }
     file.close();
+    closesocket(*clientSocket);
 }

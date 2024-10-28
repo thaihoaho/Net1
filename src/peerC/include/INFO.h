@@ -1,6 +1,6 @@
 #ifndef NETWORK_H
 #define NETWORK_H
-#include <sstream>
+
 #include <iostream>
 #include <string>
 #include <winsock2.h>
@@ -12,7 +12,6 @@
 #include <cmath>
 #include <cstring>
 #include <sstream>
-
 #pragma comment(lib, "ws2_32.lib")
 using namespace std;
 
@@ -42,7 +41,7 @@ inline mutex mtx;
 inline mutex bufferMutex;
 // ADDRESS 
 inline const char *LISTEN_IP = "127.0.0.1";
-inline const int LISTEN_PORT = 8080;
+inline const int LISTEN_PORT = 8082;
 
 sockInfo createSockAddr(char *ip, int port);
 sockInfo init(char *ip, int port);
@@ -54,5 +53,5 @@ void listenRequest();
 void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset);
 
 void sendRequestNthread(vector<pair<string, int>> v, char* name, int filesize);
-void sendFileNthread(SOCKET clientSocket, const char *filePath, int offset, long required);
+void sendFileNthread(SOCKET *clientSocket, const char *filePath, int offset, long required);
 #endif

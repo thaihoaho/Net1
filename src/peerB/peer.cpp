@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     printf("Type \"help\" to get infomation\n");
     while (true)
     {
-        std::cout << "hi..." << std::endl;
         string input;
         getline(cin,input);
 
@@ -58,21 +57,21 @@ int main(int argc, char *argv[])
             }
             char* content = new char[remainContent.length() + 1];
             strcpy(content,remainContent.c_str());
-            //sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, content); 
+            thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, content).detach();  
             //Send request to TRACKER
             //TRACKER returns a mapinfo and a vector<pair<string, int>>
             mapinfo m(const_cast<char*>("hi"), const_cast<char*>("files/a.jpg"), 1878342, ceil(1878342/512000), 512000);
             vector<pair<string, int>> v{
-                make_pair("127.0.0.1",8081), 
+                make_pair("127.0.0.1",8081),
                 make_pair("127.0.0.1",8082),
             };
-            std::cout << "Downloading..." << std::endl;
             sendRequestNthread(v, m.name, m.filesize);
+
         }
-        else{   
+        else{
             printf("Command \"%s\" undefined!!\n",command.c_str());
         }
     }
-    
+
     return 0;
 }

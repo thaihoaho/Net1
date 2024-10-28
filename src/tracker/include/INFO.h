@@ -49,3 +49,4 @@ sockInfo init(char *ip, int port);
 void listenRequest();
 void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset);
 #endif
+    
