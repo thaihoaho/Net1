@@ -1,14 +1,6 @@
 #include "include/INFO.h"
 #include "../file.h"
 
-sockInfo listenSock;
-mutex mtx;
-
-const char* LISTEN_IP = "127.0.0.1";
-const int LISTEN_PORT = 8080;
-
-char *SHARE_BUFFER;
-
 int main(int argc, char *argv[])
 {
 
@@ -49,9 +41,12 @@ int main(int argc, char *argv[])
                 printf("command error!\n");
                 continue;
             }
-            //TODO
-            //doc file path va lay thong tin cua file va them vao buffer gui len cho tracker
-            thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, const_cast<char*>(PUBLISH_REQUEST)).detach();
+
+            char request[1024] = {0};
+            strcat(request,PUBLISH_REQUEST);
+            strcat(request, "0000000000a.txt 20 20 12134");
+
+            thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request).detach();
         }
         else if (command == "down"){
             string remainContent = PUBLISH_REQUEST +  (input.substr(index + 1, input.length() - index - 1) + '\0');          

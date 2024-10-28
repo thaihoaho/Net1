@@ -20,11 +20,11 @@ struct sockInfo
     sockInfo(SOCKET so, sockaddr_in ad) : sock(so), addr(ad) {}
 };
 // SOCKET
-extern sockInfo listenSock;
-extern mutex mtx;
+inline sockInfo listenSock;
+inline mutex mtx;
 // ADDRESS 
-extern const char *LISTEN_IP;
-extern const int LISTEN_PORT;
+inline const char *LISTEN_IP = "127.0.0.1";
+inline const int LISTEN_PORT = 80808;
 
 sockInfo createSockAddr(char *ip, int port);
 sockInfo init(char *ip, int port);

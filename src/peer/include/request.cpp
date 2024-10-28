@@ -4,7 +4,7 @@
 // send data of sender
 void sendData(SOCKET *sendedSocket, char* path, int pieceSize, int pieceOffset)
 {
-    char *buffer = new char[1024];
+    char buffer[1024] = {0};
     ifstream readfile(path, ostream::binary);
     readfile.seekg(pieceOffset * pieceSize, std::ios::beg);
     readfile.read(buffer, pieceSize);

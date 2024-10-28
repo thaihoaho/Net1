@@ -1,6 +1,4 @@
-// this file use to handle all command that user uses
 #include "INFO.h"
-// #include "../../file.h"
 // receive data of reveiver
 void waitData(SOCKET *socket)
 {

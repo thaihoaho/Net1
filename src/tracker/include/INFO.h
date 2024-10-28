@@ -1,5 +1,6 @@
 #ifndef NETWORK_H
 #define NETWORK_H
+#include "../../file.h"
 
 #include <iostream>
 #include <string>
@@ -22,20 +23,25 @@ struct sockInfo
     sockInfo(SOCKET so, sockaddr_in ad) : sock(so), addr(ad) {}
 };
 
-struct peerAddress{
-    string ip;
-    int port;
-    peerAddress(char* i, int p){
-        ip = i;
-        port = p;
+struct mapinfo
+{
+    char *hashinfo;
+    char *name;
+    int filesize, piececount, piecesize;
+    mapinfo(char *hash, char *na, int fs, int pc, int ps)
+        : hashinfo(hash), name(na), filesize(fs), piececount(pc), piecesize(ps) {}
+    ~mapinfo() {
+        delete[] hashinfo; 
+        delete[] name;      
     }
 };
+inline vector<mapinfo*> listmap;
+
+inline unordered_map<string, vector<pair<string, int>>> hashtable; // storage all peer address has a file with hashinfo
+
 // SOCKET
-extern sockInfo listenSock;
-extern mutex mtx;
-// ADDRESS 
-extern const char *SERVER_LISTEN_IP;
-extern const int SERVER_LISTEN_PORT;
+inline sockInfo listenSock;
+inline mutex mtx;
 
 sockInfo createSockAddr(char *ip, int port);
 sockInfo init(char *ip, int port);
