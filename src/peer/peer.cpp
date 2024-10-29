@@ -50,18 +50,25 @@ int main(int argc, char *argv[])
             thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request).detach();
         }
         else if (command == "down"){
-            string remainContent = PUBLISH_REQUEST +  (input.substr(index + 1, input.length() - index - 1) + '\0');          
+            string remainContent = (input.substr(index + 1, input.length() - index - 1) + '\0');          
             if(remainContent.find(' ') != -1)
             {
                 printf("command error!\n");
                 continue;
             }
-            char* content = new char[remainContent.length() + 1];
-            strcpy(content,remainContent.c_str());
+            //TO DO: FETCH  
             //sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, content); 
             //Send request to TRACKER
             //TRACKER returns a mapinfo and a vector<pair<string, int>>
-            mapinfo m(const_cast<char*>("hi"), const_cast<char*>("files/a.jpg"), 1878342, ceil(1878342/512000), 512000);
+            const char* filepath = "files/";
+            size_t length = std::strlen(filepath) + remainContent.length() + 1;
+
+            char* result = new char[length];
+
+            std::strcpy(result, filepath);
+            std::strcat(result, remainContent.c_str());
+
+            static mapinfo m(const_cast<char*>("hi"), const_cast<char*>("files/game.mp4"), 20831306 , ceil(20831306 /512000), 512000);
             vector<pair<string, int>> v{
                 make_pair("127.0.0.1",8081), 
                 make_pair("127.0.0.1",8082),

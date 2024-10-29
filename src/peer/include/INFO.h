@@ -54,5 +54,5 @@ void listenRequest();
 void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset);
 
 void sendRequestNthread(vector<pair<string, int>> v, char* name, int filesize);
-void sendFileNthread(SOCKET clientSocket, const char *filePath, int offset, long required);
+void sendFileNthread(SOCKET *clientSocket, const char *filePath, int offset, long required);
 #endif

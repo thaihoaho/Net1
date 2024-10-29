@@ -35,7 +35,7 @@ void listenRequest()
             cerr << "Accept failed: " << WSAGetLastError() << endl;
             continue;
         }
-        char buffer[1024] = {0};
+       char buffer[1024] = {0};
         int bytesRead = recv(clientSocket, buffer, 1024, 0);
         std::string str(buffer);
         std::istringstream iss(str);
@@ -56,13 +56,13 @@ void listenRequest()
             const char* fileName  = name.c_str();
             int offset = stoi(number2);
             int partSize = stoi(number3); 
-            sendFileNthread(&clientSocket, fileName, offset, partSize);
+            thread(sendFileNthread,&clientSocket, fileName, offset, partSize).detach();
         }
     }
 }
 
 void sendFileNthread(SOCKET* clientSocket, const char *filePath, int offset, long required) {
-    //  std::string filePath = "files/";
+    // std::string filePath = "files/";
     // filePath += fileName;
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if (!file.is_open()) {

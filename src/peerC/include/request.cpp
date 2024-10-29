@@ -56,7 +56,7 @@ void listenRequest()
             const char* fileName  = name.c_str();
             int offset = stoi(number2);
             int partSize = stoi(number3); 
-            sendFileNthread(&clientSocket, fileName, offset, partSize);
+            thread(sendFileNthread,&clientSocket, fileName, offset, partSize).detach();
         }
     }
 }

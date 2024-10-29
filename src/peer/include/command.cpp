@@ -54,7 +54,6 @@ void receiveFileChunk(SOCKET sock, long offset, size_t chunkSize, int threadID,
             std::memcpy(sharedBuffer.data() + pos * offset + totalBytesReceived, buffer.data(), bytesReceived);
         }
         totalBytesReceived += bytesReceived;
-        if (totalBytesReceived >= filesize) break;
         std::cout << "Thread " << threadID << " received " << bytesReceived << " bytes." << std::endl;
     }
 
@@ -124,7 +123,7 @@ void sendRequestNthread(vector<pair<string, int>> v, char* name, int filesize){
         }
     }
     std::cout << "OK";
-    const char* fileName = "files/a2.jpg";
+    string fileName = "files/video.mp4";
     std::ofstream outputFile(fileName, std::ios::binary);
     outputFile.write(sharedBuffer.data(), sharedBuffer.size()); 
     outputFile.close();

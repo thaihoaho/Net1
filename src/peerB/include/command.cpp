@@ -45,18 +45,14 @@ void receiveFileChunk(SOCKET sock, long offset, size_t chunkSize, int threadID,
     size_t pos = static_cast<size_t>(ceil(filesize / num_of_peers));
     std::vector<char> buffer(chunkSize);
     int bytesReceived;
-
-    
-    // Receive data in chunks
     size_t totalBytesReceived = 0;
     while ((bytesReceived = recv(sock, buffer.data(), chunkSize, 0)) > 0) {
-        std::lock_guard<std::mutex> lock(bufferMutex);  // Lock for exclusive access
+        std::cout << "receiving..." << std::endl;
+        std::lock_guard<std::mutex> lock(bufferMutex);  
 
-        // Check for boundaries to avoid buffer overflow
         if (pos * offset + totalBytesReceived + bytesReceived <= sharedBuffer.size()) {
             std::memcpy(sharedBuffer.data() + pos * offset + totalBytesReceived, buffer.data(), bytesReceived);
         }
-
         totalBytesReceived += bytesReceived;
         std::cout << "Thread " << threadID << " received " << bytesReceived << " bytes." << std::endl;
     }
@@ -84,7 +80,6 @@ void sendRequestNthread(vector<pair<string, int>> v, char* name, int filesize){
         sockAddr_ins[i].sin_family = AF_INET;
         sockAddr_ins[i].sin_port = htons(v[i].second);
         inet_pton(AF_INET, "127.0.0.1", &sockAddr_ins[i].sin_addr);
-        
     }
     std::cout << "Socket creation ok" << std:: endl;
 
@@ -98,17 +93,28 @@ void sendRequestNthread(vector<pair<string, int>> v, char* name, int filesize){
     }
     std::cout << "Connections ok" << std:: endl;
     std::vector<char> sharedBuffer(filesize, ' ');
-    std::vector<std::thread> threads;
-    char* buffer = name;
+    std::vector<std::thread> threads(num_of_peers);
+    
+    const char* filename = name;
+    int offset;
+    int partSize = ceil(filesize/num_of_peers);
+    
     for (int i = 0; i < num_of_peers; i++){
-        if (send(socks[i], name, strlen(buffer), 0) == SOCKET_ERROR)
+        offset = i;
+        std::stringstream ss;
+        ss << "1111111111" << "-" << name << "-" << offset << "-" << partSize;
+        std::string result = ss.str();
+        char* newBuffer = new char[result.size() + 1];
+        std::strcpy(newBuffer, result.c_str());
+        if (send(socks[i], newBuffer, strlen(newBuffer), 0) == SOCKET_ERROR)
         {
             std::cerr << "Send failed: " << WSAGetLastError() << std::endl;
             return;
         }
     }
+        
     for (int i = 0; i < num_of_peers; i++) {
-        threads.emplace_back(receiveFileChunk, socks[i], i, 512000, i + 1, num_of_peers, filesize, std::ref(sharedBuffer));
+        threads[i] = std::thread(receiveFileChunk, socks[i], i, 512000, i + 1, num_of_peers, filesize, std::ref(sharedBuffer));
     }
 
     for (auto& t : threads) {
@@ -117,7 +123,7 @@ void sendRequestNthread(vector<pair<string, int>> v, char* name, int filesize){
         }
     }
     std::cout << "OK";
-    const char* fileName = "a2.jpg";
+    string fileName = "files/video.mp4";
     std::ofstream outputFile(fileName, std::ios::binary);
     outputFile.write(sharedBuffer.data(), sharedBuffer.size()); 
     outputFile.close();
