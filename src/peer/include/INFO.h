@@ -1,6 +1,6 @@
 #ifndef NETWORK_H
 #define NETWORK_H
-
+#include "../../file.h"
 #include <iostream>
 #include <string>
 #include <winsock2.h>

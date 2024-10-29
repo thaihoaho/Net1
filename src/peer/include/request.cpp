@@ -43,13 +43,10 @@ void listenRequest()
         strncpy(requestID, buffer, 10);
         requestID[10] = '\0';
         // receive request send file
-        if (strcmp(requestID, "1111111111") == 0)
+        if (strcmp(requestID, PING_REQUEST) == 0)
         {
             printf("Thread of server receive %i bytes\n%s\n", bytesRead, buffer);
-            sendData(&clientSocket, (char*)"files/aa.txt", 4, 0);
+            send(clientSocket,buffer,43,0);
         }
-
-
-
     }
 }

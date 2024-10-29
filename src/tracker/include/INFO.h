@@ -11,6 +11,7 @@
 #include <mutex>
 #include <unordered_map>
 #include <vector>
+#include <chrono>
 
 #pragma comment(lib, "ws2_32.lib")
 using namespace std;
@@ -38,7 +39,8 @@ struct mapinfo
 inline vector<mapinfo*> listmap;
 inline vector<pair<char*,int>> list_active_peer;
 inline unordered_map<string, vector<pair<char*, int>>> hashtable; // storage all peer address has a file with hashinfo
-
+inline bool running = true;
+inline char ping_request[33] = {'0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',0};
 // SOCKET
 inline sockInfo listenSock;
 inline mutex mtx;
@@ -48,4 +50,6 @@ sockInfo init(char *ip, int port);
 
 void listenRequest();
 void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset);
+
+void sendRequest(char *ip, int port, char *buffer);
 #endif
