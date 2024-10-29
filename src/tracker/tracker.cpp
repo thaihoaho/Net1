@@ -61,7 +61,6 @@ int main(int argc, char *argv[])
         {
             cout << "Exiting tracker..." << endl;
             running = false;
-            lten.join();
             break;
         }
         else
