@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
             sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request);
         }
-        else if (command == "down"){
+        else if (command == "download"){
             char response[1024] = {0};
             strcat(response,DOWN_REQUEST);
             strcat(response,"0000000000");
