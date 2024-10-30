@@ -11,8 +11,10 @@ int main(int argc, char *argv[])
 
     listenSock = init((char *)SERVER_LISTEN_IP, SERVER_LISTEN_PORT);
 
+    // listenRequest();
     thread lten(listenRequest);
     lten.detach();
+    
     // Command-shell interpreter
     printf("Type \"help\" to get infomation\n");
     while (true)

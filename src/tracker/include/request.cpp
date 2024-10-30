@@ -69,9 +69,20 @@ void listenRequest()
 #endif
 
             // add into hashtable
-            hashtable[hashinfo].push_back(make_pair(client_listen_ip, client_listen_port));
+            vector<pair<char*,int >> *list = &hashtable[hashinfo];
+            bool exist = true;
+            for (auto &iter:*list)
+            {
+                if(strcmp(iter.first,client_listen_ip) == 0 && client_listen_port == iter.second)
+                {
+                    exist = false;
+                    break;
+                }
+            }
+            if(exist)
+                hashtable[hashinfo].push_back(make_pair(client_listen_ip, client_listen_port));
 
-            listmap.push_back(new mapinfo(hashinfo, strdup(name), filesize, piececount, piecesize));
+            listmap.push_back(new mapinfo(strdup(hashinfo), strdup(name), filesize, piececount, piecesize));
 
             send(clientSocket, "OK", 2, 0);
             mtx.unlock();
@@ -95,6 +106,7 @@ void listenRequest()
 
             char response[1024] = {0};
             snprintf(response, 11, "%s", requestID);
+
             for (mapinfo *m : listmap)
             {
                 strcat(response, " ");
@@ -133,6 +145,7 @@ void listenRequest()
 
             char response[1024] = {0};
             strncpy(response, requestID, 10);
+            
             mapinfo *item;
             for (mapinfo *m : listmap)
             {
@@ -161,6 +174,9 @@ void listenRequest()
                 continue;
             }
             bool check = true;
+            strcat(response, " ");
+            strcat(response, to_string(hashtable[hashinfo].size()).c_str());
+
             for (const auto &item : (*iterator).second)
             {
                 if (strcmp(item.first, client_listen_ip) == 0 && item.second == client_listen_port)

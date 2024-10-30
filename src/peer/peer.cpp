@@ -42,19 +42,15 @@ int main(int argc, char *argv[])
         else if (command == "publish")
         {
             string name = (input.substr(index + 1, input.length() - index - 1) + '\0');
-            if(name.find(' ') != -1)
-            {
-                printf("command error!\n");
-                continue;
-            }
-
+           
             char request[1024] = {0};
             strcat(request,PUBLISH_REQUEST);
             strcat(request," ");
             strcat(request, LISTEN_IP);
             strcat(request," ");
             strcat(request, to_string(LISTEN_PORT).c_str());
-            strcat(request, " 0000000000 a.txt 20 20 12134");
+            strcat(request, " ");
+            strcat(request, name.c_str());
 
             sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request);
         }
