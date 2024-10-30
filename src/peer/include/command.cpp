@@ -19,7 +19,7 @@ void waitData(SOCKET *socket, bool flag, char *buffer)
 
     closesocket(*socket);
 }
-void sendRequest(char *ip, int port, char *buffer, int flag)
+void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
 {
     sockInfo socket = createSockAddr(ip, port);
 
@@ -39,25 +39,39 @@ void sendRequest(char *ip, int port, char *buffer, int flag)
     if (flag == 1)
     {
         flag = 2;
-        // fetch downBuffer = 1111100000 video.mp4 0000000000 20831306 aa.txt 0000000001 4
-                            
-        // down  1010101010 0000000000 127.0.0.1 8080
-        int spaceCount = 0;
-        const char *pos = downBuffer;
+        // fetch //downBuffer = 1111100000 video.mp4 0000000000 20831306 aa.txt 0000000001 4
 
-        while (spaceCount < 2)
+        // down  1010101010 0000000000 127.0.0.1 8080
+        char *pos = downBuffer;
+        char request[1024] = {0};
+        char hashinfo[11] = {0};
+        std::string fname;
+        short start = 0, end = 0;
+        bool s = true;
+
+        while (strcmp(filename.c_str(), fname.c_str()) != 0 && *pos != '\0')
         {
             if (*pos == ' ')
             {
-                ++spaceCount;
+                if (s)
+                {
+                    start = pos - downBuffer + 1;
+                    s = false;
+                }
+                else
+                {
+                    end = pos - downBuffer;
+                    fname.assign(downBuffer + start, end - start);
+                    s = true;
+                }
             }
-            ++pos;
+            pos++;
         }
-        char request[1024] = {0};
-        char *hashinfo = new char[11];
-        hashinfo[10] = '\0';
+
+        std::cout << "Filename: " << fname << std::endl;
+
+        strncpy(hashinfo, pos, 10);
         strcat(request, "1010101010");
-        std::strncpy(hashinfo, pos, 10);
         strcat(request, " ");
         strcat(request, hashinfo);
         strcat(request, " ");
@@ -151,7 +165,12 @@ void sendRequest(char *ip, int port, char *buffer, int flag)
         {
             std::cout << i.first << " " << i.second << std::endl;
         }
-        sendRequestNthread(v, const_cast<char*>(name.c_str()), stoi(size));
+        const char* filepath = "files/";
+        size_t length = std::strlen(filepath) + name.length() + 1;
+        char* result = new char[length];
+        std::strcpy(result, filepath);
+        std::strcat(result, name.c_str());
+        sendRequestNthread(v, const_cast<char *>(result), stoi(size));
     }
 }
 
@@ -229,8 +248,9 @@ void sendRequestNthread(vector<pair<string, int>> v, char *name, int filesize)
     {
         offset = i;
         std::stringstream ss;
-        ss << "1111111111" << "-" << name << "-" << offset << "-" << partSize;
+        ss << "1010101010" << "-" << name << "-" << offset << "-" << partSize;
         std::string result = ss.str();
+        std::cout << result << std::endl;
         char *newBuffer = new char[result.size() + 1];
         std::strcpy(newBuffer, result.c_str());
         if (send(socks[i], newBuffer, strlen(newBuffer), 0) == SOCKET_ERROR)
@@ -253,7 +273,7 @@ void sendRequestNthread(vector<pair<string, int>> v, char *name, int filesize)
         }
     }
     std::cout << "OK";
-    string fileName = "files/video.mp4";
+    string fileName = string(name);
     std::ofstream outputFile(fileName, std::ios::binary);
     outputFile.write(sharedBuffer.data(), sharedBuffer.size());
     outputFile.close();

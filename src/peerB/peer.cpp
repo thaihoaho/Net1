@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     printf("Type \"help\" to get infomation\n");
     while (true)
     {
-        std::cout << "hi..." << std::endl;
+        std::cout << ">";
         string input;
         getline(cin,input);
 
@@ -30,51 +30,64 @@ int main(int argc, char *argv[])
         {
             printf("Help request\n");
         }
+        else if (command == "list"){
+            list(0, "");
+        }
         else if (command == "fetch")
         {
-            thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,const_cast<char*>(FETCH_REQUEST)).detach();
+            char request[1024] = {0};
+            strcat(request,FETCH_REQUEST);
+            strcat(request," ");
+            strcat(request, LISTEN_IP);
+            strcat(request," ");
+            strcat(request, to_string(LISTEN_PORT).c_str());
+            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,request, 0);
         }
         else if (command == "publish")
         {
-            string name = (input.substr(index + 1, input.length() - index - 1) + '\0');
+            string name = (input.substr(index + 1, input.length() - index - 1));
             if(name.find(' ') != -1)
             {
                 printf("command error!\n");
                 continue;
             }
-
             char request[1024] = {0};
+            long filesize = list(1, name);
+            int pieces = piecesCount(filesize);
             strcat(request,PUBLISH_REQUEST);
-            strcat(request, "0000000000a.txt 20 20 12134");
-
-            thread(sendRequest,const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request).detach();
+            strcat(request," ");
+            strcat(request, LISTEN_IP);
+            strcat(request," ");
+            strcat(request, to_string(LISTEN_PORT).c_str());
+            strcat(request," ");
+            strcat(request, generateHashinfo(name, filesize, pieces, 512000));
+            strcat(request," ");
+            strcat(request, name.c_str());
+            strcat(request," ");
+            strcat(request, to_string(filesize).c_str());     
+            strcat(request," ");
+            strcat(request, to_string(pieces).c_str());
+            strcat(request," ");
+            strcat(request, to_string(512000).c_str());
+            std::cout << request << std::endl;
+            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request, 0);
         }
         else if (command == "down"){
-            string remainContent = (input.substr(index + 1, input.length() - index - 1) + '\0');          
+            string remainContent = (input.substr(index + 1, input.length() - index - 1) + '\0');     
             if(remainContent.find(' ') != -1)
             {
                 printf("command error!\n");
                 continue;
             }
-            //TO DO: FETCH  
-            //sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, content); 
-            //Send request to TRACKER
-            //TRACKER returns a mapinfo and a vector<pair<string, int>>
-            const char* filepath = "files/";
-            size_t length = std::strlen(filepath) + remainContent.length() + 1;
 
-            char* result = new char[length];
-
-            std::strcpy(result, filepath);
-            std::strcat(result, remainContent.c_str());
-
-            static mapinfo m(const_cast<char*>("hi"), const_cast<char*>("files/game.mp4"), 20831306 , ceil(20831306 /512000), 512000);
-            vector<pair<string, int>> v{
-                make_pair("127.0.0.1",8081), 
-                make_pair("127.0.0.1",8082),
-            };
-            std::cout << "Downloading..." << std::endl;
-            sendRequestNthread(v, m.name, m.filesize);
+            string s1= FETCH_REQUEST;
+            string s2= LISTEN_IP;
+            string s3= to_string(LISTEN_PORT);
+            const char* s4 = (s1 + " " + s2 + " " + s3).c_str();
+            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,const_cast<char*>(s4), 1, remainContent);
+            
+            
+            
         }
         else{   
             printf("Command \"%s\" undefined!!\n",command.c_str());

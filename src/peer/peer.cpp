@@ -79,17 +79,14 @@ int main(int argc, char *argv[])
                 printf("command error!\n");
                 continue;
             }
+
             string s1= FETCH_REQUEST;
             string s2= LISTEN_IP;
             string s3= to_string(LISTEN_PORT);
             const char* s4 = (s1 + " " + s2 + " " + s3).c_str();
-            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,const_cast<char*>(s4), 1);
+            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,const_cast<char*>(s4), 1, remainContent);
             
-            const char* filepath = "files/";
-            size_t length = std::strlen(filepath) + remainContent.length() + 1;
-            char* result = new char[length];
-            std::strcpy(result, filepath);
-            std::strcat(result, remainContent.c_str());
+            
             
         }
         else{   
