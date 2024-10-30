@@ -50,13 +50,16 @@ void listenRequest()
         const char* requestID = number1.c_str();
 
         // receive request send file
-        if (strcmp(requestID, "1111111111") == 0)
+        if (strcmp(requestID, DOWN_REQUEST) == 0)
         {
             printf("Thread of server receive %i bytes\n%s\n", bytesRead, buffer);
             const char* fileName  = name.c_str();
             int offset = stoi(number2);
             int partSize = stoi(number3); 
             thread(sendFileNthread,&clientSocket, fileName, offset, partSize).detach();
+        }
+        if (strcmp(requestID, PING_REQUEST) == 0){
+            printf("Thread of server receive %i bytes\n%s\n", bytesRead, buffer);
         }
     }
 }

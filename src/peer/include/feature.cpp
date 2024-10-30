@@ -66,7 +66,7 @@ int piecesCount(long filesize)
 char *generateHashinfo(string filename, long filesize, int piecesCount, int pieceSize)
 {
     char *temp = new char[11]; // Allocate memory for 10 characters + null terminator
-    std::strcpy(temp, "0000000001");
+    std::strcpy(temp, "0000000000");
 
     return temp;
 }

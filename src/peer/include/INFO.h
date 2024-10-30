@@ -51,7 +51,7 @@ sockInfo createSockAddr(char *ip, int port);
 sockInfo init(char *ip, int port);
 
 void waitData(SOCKET *socket, bool flag, char* buffer);
-void sendRequest(char *ip, int port, char *buffer, int flag);
+void sendRequest(char *ip, int port, char *buffer, int flag, string filename = "");
 
 void listenRequest();
 void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset);

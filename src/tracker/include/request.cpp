@@ -174,8 +174,6 @@ void listenRequest()
                 mtx.unlock();
                 continue;
             }
-            strcat(response, " ");
-            strcat(response, to_string((*iterator).second.size()).c_str());
             bool check = true;
             strcat(response, " ");
             strcat(response, to_string(hashtable[hashinfo].size()).c_str());
