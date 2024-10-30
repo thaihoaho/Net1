@@ -36,3 +36,37 @@ sockInfo init(char *ip, int port)
     }
     return info;
 }
+
+long list(bool x, string filename)
+{
+    std::string path = "./files/";
+    for (const auto &entry : fs::directory_iterator(path))
+    {
+        if (fs::is_regular_file(entry.status()))
+        {
+
+            if (x == 1 && entry.path().filename().string() == filename)
+            {   
+                return (long)(fs::file_size(entry));
+            } else
+            if (x == 0)
+                std::cout << "  File: " << entry.path().filename() << " - Size: "
+                          << fs::file_size(entry) << " bytes" << std::endl;
+        }
+    }
+    return 0;
+}
+
+
+int piecesCount(long filesize)
+{
+    return ceil(filesize / 512000);
+}
+
+char *generateHashinfo(string filename, long filesize, int piecesCount, int pieceSize)
+{
+    char *temp = new char[11]; // Allocate memory for 10 characters + null terminator
+    std::strcpy(temp, "0000000000");
+
+    return temp;
+}

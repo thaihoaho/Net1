@@ -157,6 +157,7 @@ void listenRequest()
                 if (!strcmp(hashinfo, m->hashinfo))
                 {
                     item = m;
+                    strcat(response, " ");
                     strcat(response, m->hashinfo);
                     strcat(response, " ");
                     strcat(response, m->name);
@@ -178,6 +179,8 @@ void listenRequest()
                 mtx.unlock();
                 continue;
             }
+            strcat(response, " ");
+            strcat(response, to_string((*iterator).second.size()).c_str());
             bool check = true;
             for (const auto &item : (*iterator).second)
             {

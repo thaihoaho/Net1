@@ -12,9 +12,11 @@
 #include <cmath>
 #include <cstring>
 #include <sstream>
+#include <filesystem>
 
 #pragma comment(lib, "ws2_32.lib")
 using namespace std;
+namespace fs = std::filesystem;
 
 struct sockInfo
 {
@@ -47,12 +49,16 @@ inline const int LISTEN_PORT = 8080;
 sockInfo createSockAddr(char *ip, int port);
 sockInfo init(char *ip, int port);
 
-void waitData(SOCKET *socket);
-void sendRequest(char *ip, int port, char *buffer);
+void waitData(SOCKET *socket, bool flag, char* buffer);
+void sendRequest(char *ip, int port, char *buffer, int flag);
 
 void listenRequest();
 void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset);
 
 void sendRequestNthread(vector<pair<string, int>> v, char* name, int filesize);
 void sendFileNthread(SOCKET *clientSocket, const char *filePath, int offset, long required);
+
+long list(bool x, string filename);
+char* generateHashinfo(string filename, long filesize, int piecesCount, int pieceSize);
+int     piecesCount(long filesize);
 #endif
