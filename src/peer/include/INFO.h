@@ -1,5 +1,6 @@
 #ifndef NETWORK_H
 #define NETWORK_H
+#include "../../file.h"
 #include <sstream>
 #include <iostream>
 #include <string>

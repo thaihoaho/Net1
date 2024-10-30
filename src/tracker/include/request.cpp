@@ -1,30 +1,20 @@
 // this file use to handle all request from peer and tracker
 #include "INFO.h"
 
-// send data of sender
-void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset)
-{
-    char buffer[1024] = {0};
-    ifstream readfile(path, ostream::binary);
-    readfile.seekg(pieceOffset * pieceSize, std::ios::beg);
-    readfile.read(buffer, pieceSize);
-    buffer[pieceSize] = '\0';
-
-    int bytesSent = send(*sendedSocket, buffer, pieceSize, 0);
-
-    // TODO
-
-    while (bytesSent <= 0)
+// Check peer has been exist in system
+void checkExist(char* ip, int port){
+    for (auto &iter : list_active_peer)
     {
-        printf("Send error");
-        bytesSent = send(*sendedSocket, buffer, pieceSize, 0);
+        if(strcmp(iter.first, ip) == 0 && iter.second == port)
+            return;
     }
-    printf("Sent %i bytes from chunk %i \nbuffer : %s\n", bytesSent, pieceOffset, buffer);
+    list_active_peer.push_back(make_pair(ip, port));
 }
+
 // used in thread to listen all requests
 void listenRequest()
 {
-    while (true)
+    while (running)
     {
         SOCKET clientSocket;
         int addrLen = sizeof(listenSock.addr);
@@ -65,31 +55,34 @@ void listenRequest()
             printf("-------Receive PUBLISH request from %s:%i-------\n", client_listen_ip, client_listen_port);
 
             // check file has been exist in system
-            bool check = false;
-            for (const auto &item : listmap)
+            if (!hashtable[hashinfo].empty())
             {
-                if (strcmp(item->hashinfo, hashinfo) == 0)
-                {
-                    printf("%s:%i>>File with hashinfo: %s has been existed in system\n", client_listen_ip, client_listen_port, hashinfo);
-                    send(clientSocket, "file existed", 10, 0);
-                    check = true;
-                    break;
-                }
-            }
-            if (check)
-            {
+                printf("%s:%i>>File with hashinfo: %s has been existed in system\n", client_listen_ip, client_listen_port, hashinfo);
+                send(clientSocket, "file existed", 10, 0);
                 mtx.unlock();
                 continue;
             }
-
+            // check peer has been registered in system
+            checkExist(client_listen_ip, client_listen_port);
 #ifdef DEBUG
-            printf("%s:%i>>Buffer: %s, Name: %s, Hashinfo: %s, Filesize: %d, Piececount: %d, Piecesize: %d\n", client_listen_ip, client_listen_port, buffer, name, hashinfo, filesize, piececount, piecesize);
+            printf("%s:%i>>Buffer: %s\nName: %s, Hashinfo: %s, Filesize: %d, Piececount: %d, Piecesize: %d\n", client_listen_ip, client_listen_port, buffer, name, hashinfo, filesize, piececount, piecesize);
 #endif
 
             // add into hashtable
-            hashtable[hashinfo].push_back(make_pair(client_listen_ip, client_listen_port));
+            vector<pair<char*,int >> *list = &hashtable[hashinfo];
+            bool exist = true;
+            for (auto &iter:*list)
+            {
+                if(strcmp(iter.first,client_listen_ip) == 0 && client_listen_port == iter.second)
+                {
+                    exist = false;
+                    break;
+                }
+            }
+            if(exist)
+                hashtable[hashinfo].push_back(make_pair(client_listen_ip, client_listen_port));
 
-            listmap.push_back(new mapinfo(hashinfo, strdup(name), filesize, piececount, piecesize));
+            listmap.push_back(new mapinfo(strdup(hashinfo), strdup(name), filesize, piececount, piecesize));
 
             send(clientSocket, "OK", 2, 0);
             mtx.unlock();
@@ -113,6 +106,7 @@ void listenRequest()
 
             char response[1024] = {0};
             snprintf(response, 11, "%s", requestID);
+
             for (mapinfo *m : listmap)
             {
                 strcat(response, " ");
@@ -151,6 +145,7 @@ void listenRequest()
 
             char response[1024] = {0};
             strncpy(response, requestID, 10);
+            
             mapinfo *item;
             for (mapinfo *m : listmap)
             {
@@ -182,6 +177,9 @@ void listenRequest()
             strcat(response, " ");
             strcat(response, to_string((*iterator).second.size()).c_str());
             bool check = true;
+            strcat(response, " ");
+            strcat(response, to_string(hashtable[hashinfo].size()).c_str());
+
             for (const auto &item : (*iterator).second)
             {
                 if (strcmp(item.first, client_listen_ip) == 0 && item.second == client_listen_port)
@@ -194,8 +192,10 @@ void listenRequest()
                 strcat(response, to_string(item.second).c_str());
             }
 
-            if (check)
+            if (check){
                 (*iterator).second.push_back(make_pair(client_listen_ip, client_listen_port));
+                checkExist(client_listen_ip, client_listen_port);
+            }
 
 #ifdef DEBUG
             printf("%s:%i>>Buffer: %s\n", client_listen_ip, client_listen_port, buffer);

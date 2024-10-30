@@ -1,33 +1,4 @@
 #include "INFO.h"
-// receive data of reveiver
-void waitData(SOCKET *socket)
-{
-    lock_guard<mutex> lock(mtx);
-    char buffer[1024] = {0};
-    int bytesRead = recv(*socket, buffer, sizeof(buffer) - 1, 0);
-    // DO HERE
-    
-    // char requestID[REQUEST_ID_LENGTH + 1];
-    // strncpy(requestID, buffer, REQUEST_ID_LENGTH);
-    // requestID[REQUEST_ID_LENGTH] = '\0';
-
-    //TODO
-    // chia ca truong hop nhan thong tin
-
-
-    if (bytesRead <= 0)
-    {
-        cerr << "Receive failed: " << WSAGetLastError() << endl;
-    }
-    else
-    {
-        buffer[bytesRead] = '\0'; // Null-terminate the bufferr
-        printf("Received %i bytes:\n%s\n", bytesRead, buffer);
-    }
-
-    
-    closesocket(*socket);
-}
 void sendRequest(char *ip, int port, char *buffer)
 {
     sockInfo socket = createSockAddr(ip, port);
@@ -38,10 +9,24 @@ void sendRequest(char *ip, int port, char *buffer)
         return;
     }
 
-    if (send(socket.sock, buffer, strlen(buffer), 0) == SOCKET_ERROR)
+    printf("Pinging %s:%i with 33 bytes of data:\n", ip, port);
+    char response[43] = {0};
+    strcpy(response, PING_REQUEST);
+    strcat(response, ping_request);
+
+    for (int i = 0; i < 4; i++)
     {
-        std::cerr << "Send failed: " << WSAGetLastError() << std::endl;
-        return;
+        auto begin_time = chrono::high_resolution_clock::now();
+        if (send(socket.sock, ping_request, 33, 0) == SOCKET_ERROR)
+        {
+            std::cerr << "Send failed: " << WSAGetLastError() << std::endl;
+            return;
+        }
+        recv(socket.sock, buffer, sizeof(buffer) - 1, 0);
+        auto end = std::chrono::high_resolution_clock::now();
+        chrono::duration<double, std::milli> elapsed = end - begin_time;
+        printf("Reply from %s:%i: bytes=33 time= %.2f ms\n", ip, port, elapsed.count());
     }
-    waitData(&socket.sock);
+    printf("Ping successfully\n");
+    closesocket(socket.sock);
 }
