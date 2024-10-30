@@ -9,11 +9,14 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    listenSock = init((char *)SERVER_LISTEN_IP, SERVER_LISTEN_PORT);
+    listenSocket = init((char *)SERVER_LISTEN_IP, SERVER_LISTEN_PORT);
+    listenSocketBackup = init((char *)SERVER_LISTEN_IP_BACKUP, SERVER_LISTEN_PORT_BACKUP);
 
     // listenRequest();
-    thread lten(listenRequest);
+    thread lten(listenRequest, &listenSocket);
     lten.detach();
+    thread ltenback(listenRequest, &listenSocketBackup);
+    ltenback.detach();
     
     // Command-shell interpreter
     printf("Type \"help\" to get infomation\n");
