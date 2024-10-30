@@ -10,6 +10,8 @@ inline const int HASHINFO_LENGTH = 10;
 
 
 inline const char *SERVER_LISTEN_IP = "127.0.0.1";
-inline const int SERVER_LISTEN_PORT = 8081;
+inline const int SERVER_LISTEN_PORT = 8080;
+inline const char *SERVER_LISTEN_IP_BACKUP = "127.0.0.1";
+inline const int SERVER_LISTEN_PORT_BACKUP = 8081;
 
 #endif

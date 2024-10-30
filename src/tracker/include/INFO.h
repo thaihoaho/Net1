@@ -42,13 +42,14 @@ inline unordered_map<string, vector<pair<char*, int>>> hashtable; // storage all
 inline bool running = true;
 inline char ping_request[33] = {'0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',0};
 // SOCKET
-inline sockInfo listenSock;
+inline sockInfo listenSocket;
+inline sockInfo listenSocketBackup;
 inline mutex mtx;
 
 sockInfo createSockAddr(char *ip, int port);
 sockInfo init(char *ip, int port);
 
-void listenRequest();
+void listenRequest(sockInfo *listenSock);
 void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset);
 
 void sendRequest(char *ip, int port, char *buffer);

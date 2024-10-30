@@ -12,13 +12,13 @@ void checkExist(char* ip, int port){
 }
 
 // used in thread to listen all requests
-void listenRequest()
+void listenRequest(sockInfo *listenSock)
 {
     while (running)
     {
         SOCKET clientSocket;
-        int addrLen = sizeof(listenSock.addr);
-        clientSocket = accept(listenSock.sock, (struct sockaddr *)&listenSock.addr, &addrLen);
+        int addrLen = sizeof(listenSock->addr);
+        clientSocket = accept(listenSock->sock, (struct sockaddr *)&listenSock->addr, &addrLen);
 
         if (clientSocket == INVALID_SOCKET)
         {
