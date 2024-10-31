@@ -44,7 +44,7 @@ void listenRequest(sockInfo *listenSock)
             // more info
             char name[100];
             int filesize, piececount, piecesize;
-            if (sscanf(buffer + 11, "%21s %i %12s %99s %d %d %d", client_listen_ip, &client_listen_port, hashinfo, name, &filesize, &piececount, &piecesize) != 7)
+            if (sscanf(buffer + 11, "%21s %i %11s %99s %d %d %d", client_listen_ip, &client_listen_port, hashinfo, name, &filesize, &piececount, &piecesize) != 7)
             {
                 send(clientSocket, "Failed to parse remaining information.", 39, 0);
                 continue;
@@ -208,7 +208,7 @@ void listenRequest(sockInfo *listenSock)
         else if (!strcmp(requestID, DELETE_FILE_REQUEST))
         {
             char hashinfo[HASHINFO_LENGTH + 1];
-            if (sscanf(buffer + 10, "%10s %21s %i", hashinfo, client_listen_ip, &client_listen_port) != 3)
+            if (sscanf(buffer + 10, "%11s %21s %i", hashinfo, client_listen_ip, &client_listen_port) != 3)
             {
                 send(clientSocket, "Failed to parse remaining information.", 39, 0);
                 continue;
