@@ -72,10 +72,10 @@ int main(int argc, char *argv[])
         else if (command == "list")
         {
             bool isEmpty = true;
-            for (int i = 1; i <= listmap.size(); i++)
+            for (int i = 0 ; i < listmap.size();i++)
             {
-                mapinfo *iter = listmap[i];
-                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n", i, iter->name, iter->filesize, iter->hashinfo);
+                mapinfo* iter = listmap[i];
+                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n",i + 1, iter->name, iter->filesize ,iter->hashinfo);
                 isEmpty = false;
             }
             if (isEmpty)

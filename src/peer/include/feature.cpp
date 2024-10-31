@@ -40,6 +40,7 @@ sockInfo init(char *ip, int port)
 long list(bool x, string filename)
 {
     std::string path = "./files/";
+    bool empty = 1;
     for (const auto &entry : fs::directory_iterator(path))
     {
         if (fs::is_regular_file(entry.status()))
@@ -49,10 +50,16 @@ long list(bool x, string filename)
             {   
                 return (long)(fs::file_size(entry));
             } else
-            if (x == 0)
+            if (x == 0){
                 std::cout << "  File: " << entry.path().filename() << " - Size: "
                           << fs::file_size(entry) << " bytes" << std::endl;
+                empty = 0;
+            }
         }
+
+    }
+    if (x==0 && empty){
+        std::cout << "Empty shared folder " << std::endl;
     }
     return 0;
 }
@@ -63,10 +70,20 @@ int piecesCount(long filesize)
     return ceil(filesize / 512000);
 }
 
-char *generateHashinfo(string filename, long filesize, int piecesCount, int pieceSize)
+char *generateHashinfo(string filename, long filesize)
 {
     char *temp = new char[11]; // Allocate memory for 10 characters + null terminator
-    std::strcpy(temp, "0000000000");
+    uint64_t hash = 0;
+
+    hash = filesize * 2654435761;
+
+    for (char c : filename) {
+        hash = (hash * 31) + c;
+    }
+
+    std::bitset<10> binaryHash(hash & 0x3FF);
+
+    std::strcpy(temp, const_cast<char*>(binaryHash.to_string().c_str()));
 
     return temp;
 }
