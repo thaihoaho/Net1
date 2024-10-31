@@ -37,6 +37,11 @@ struct mapinfo
     }
 };
 inline vector<mapinfo*> listmap;
+struct peerinfo{
+    char* username;
+    char* password;
+    
+};
 inline vector<pair<char*,int>> list_active_peer;
 inline unordered_map<string, vector<pair<char*, int>>> hashtable; // storage all peer address has a file with hashinfo
 inline bool running = true;

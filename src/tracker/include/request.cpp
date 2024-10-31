@@ -260,7 +260,7 @@ void listenRequest(sockInfo *listenSock)
             if (isEmpty)
                 printf("Don's exist file in system.\n");
 #endif
-            send(clientSocket,"OK",3,0);
+            send(clientSocket,"OK\n",3,0);
             mtx.unlock();
         }
         else
