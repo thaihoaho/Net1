@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
             strcat(request," ");
             strcat(request, to_string(LISTEN_PORT).c_str());
             strcat(request," ");
-            strcat(request, generateHashinfo(name, filesize, pieces, 512000));
+            strcat(request, generateHashinfo(name, filesize));
             strcat(request," ");
             strcat(request, name.c_str());
             strcat(request," ");

@@ -4,7 +4,6 @@
 // receive data of reveiver
 void waitData(SOCKET *socket, bool flag, char *buffer)
 {
-    lock_guard<mutex> lock(mtx);
     int bytesRead = recv(*socket, buffer, 1023, 0);
 
     if (bytesRead <= 0)
@@ -16,7 +15,6 @@ void waitData(SOCKET *socket, bool flag, char *buffer)
         buffer[bytesRead] = '\0'; // Null-terminate the bufferr
         printf("Received %i bytes:\n%s\n", bytesRead, buffer);
     }
-
     closesocket(*socket);
 }
 void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
@@ -49,7 +47,7 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
         short start = 0, end = 0;
         bool s = true;
 
-        while (strcmp(filename.c_str(), fname.c_str()) != 0 && *pos != '\0')
+        while (*pos != '\0')
         {
             if (*pos == ' ')
             {
@@ -63,6 +61,12 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
                     end = pos - downBuffer;
                     fname.assign(downBuffer + start, end - start);
                     s = true;
+                    if (strcmp(filename.c_str(), fname.c_str()) == 0){
+                        pos++;
+                        break; 
+                    }
+                        
+                    continue;
                 }
             }
             pos++;

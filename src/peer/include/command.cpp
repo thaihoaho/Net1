@@ -47,7 +47,7 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
         short start = 0, end = 0;
         bool s = true;
 
-        while (strcmp(filename.c_str(), fname.c_str()) != 0 && *pos != '\0')
+        while (*pos != '\0')
         {
             if (*pos == ' ')
             {
@@ -61,6 +61,12 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
                     end = pos - downBuffer;
                     fname.assign(downBuffer + start, end - start);
                     s = true;
+                    if (strcmp(filename.c_str(), fname.c_str()) == 0){
+                        pos++;
+                        break; 
+                    }
+                        
+                    continue;
                 }
             }
             pos++;

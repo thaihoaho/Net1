@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
             strcat(request," ");
             strcat(request, to_string(LISTEN_PORT).c_str());
             strcat(request," ");
-            strcat(request, generateHashinfo(name, filesize, pieces, 512000));
+            strcat(request, generateHashinfo(name, filesize));
             strcat(request," ");
             strcat(request, name.c_str());
             strcat(request," ");
@@ -83,11 +83,10 @@ int main(int argc, char *argv[])
             string s1= FETCH_REQUEST;
             string s2= LISTEN_IP;
             string s3= to_string(LISTEN_PORT);
-            const char* s4 = (s1 + " " + s2 + " " + s3).c_str();
-            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,const_cast<char*>(s4), 1, remainContent);
-            
-            
-            
+            char s4[1024]= {0};
+            strcpy(s4, const_cast<char*>((s1 + " " + s2 + " " + s3).c_str()));
+            cout << s4 << endl;
+            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,s4, 1, remainContent);
         }
         else{   
             printf("Command \"%s\" undefined!!\n",command.c_str());

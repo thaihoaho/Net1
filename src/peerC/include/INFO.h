@@ -14,7 +14,7 @@
 #include <cstring>
 #include <sstream>
 #include <filesystem>
-
+#include <bitset>
 #pragma comment(lib, "ws2_32.lib")
 using namespace std;
 namespace fs = std::filesystem;
@@ -45,7 +45,7 @@ inline mutex mtx;
 inline mutex bufferMutex;
 // ADDRESS 
 inline const char *LISTEN_IP = "127.0.0.1";
-inline const int LISTEN_PORT = 8083;
+inline const int LISTEN_PORT = 8082;
 
 sockInfo createSockAddr(char *ip, int port);
 sockInfo init(char *ip, int port);
@@ -60,6 +60,6 @@ void sendRequestNthread(vector<pair<string, int>> v, char* name, int filesize);
 void sendFileNthread(SOCKET *clientSocket, const char *filePath, int offset, long required);
 
 long list(bool x, string filename);
-char* generateHashinfo(string filename, long filesize, int piecesCount, int pieceSize);
+char* generateHashinfo(string filename, long filesize);
 int     piecesCount(long filesize);
 #endif
