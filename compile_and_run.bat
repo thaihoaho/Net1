@@ -1,9 +1,9 @@
 @echo off
 cd %~dp0
 
-@REM rem Open new CMD for peer
-@REM start cmd /k "echo PEER compiling && g++ -o src/peer/peer.exe src/peer/peer.cpp src/peer/include/feature.cpp src/peer/include/request.cpp src/peer/include/command.cpp -lws2_32 && cd src\peer && .\peer.exe"
-@REM echo Peer started.
+rem Open new CMD for peer
+start cmd /k "echo PEER compiling && g++ -o src/peer/peer.exe src/peer/peer.cpp src/peer/include/feature.cpp src/peer/include/request.cpp src/peer/include/command.cpp -lws2_32 && cd src\peer && .\peer.exe"
+echo Peer started.
 
 rem Open new CMD for peer
 start cmd /k "echo PEEC B compiling && g++ -o src/peer/peer.exe src/peer/peer.cpp src/peer/include/feature.cpp src/peer/include/request.cpp src/peer/include/command.cpp -lws2_32 && cd src\peer && .\peer.exe"
