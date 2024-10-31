@@ -2,10 +2,11 @@
 #include "INFO.h"
 
 // Check peer has been exist in system
-void checkExist(char* ip, int port){
+void checkExist(char *ip, int port)
+{
     for (auto &iter : list_active_peer)
     {
-        if(strcmp(iter.first, ip) == 0 && iter.second == port)
+        if (strcmp(iter.first, ip) == 0 && iter.second == port)
             return;
     }
     list_active_peer.push_back(make_pair(ip, port));
@@ -69,17 +70,17 @@ void listenRequest(sockInfo *listenSock)
 #endif
 
             // add into hashtable
-            vector<pair<char*,int >> *list = &hashtable[hashinfo];
+            vector<pair<char *, int>> *list = &hashtable[hashinfo];
             bool exist = true;
-            for (auto &iter:*list)
+            for (auto &iter : *list)
             {
-                if(strcmp(iter.first,client_listen_ip) == 0 && client_listen_port == iter.second)
+                if (strcmp(iter.first, client_listen_ip) == 0 && client_listen_port == iter.second)
                 {
                     exist = false;
                     break;
                 }
             }
-            if(exist)
+            if (exist)
                 hashtable[hashinfo].push_back(make_pair(client_listen_ip, client_listen_port));
 
             listmap.push_back(new mapinfo(strdup(hashinfo), strdup(name), filesize, piececount, piecesize));
@@ -145,7 +146,7 @@ void listenRequest(sockInfo *listenSock)
 
             char response[1024] = {0};
             strncpy(response, requestID, 10);
-            
+
             mapinfo *item;
             for (mapinfo *m : listmap)
             {
@@ -190,7 +191,8 @@ void listenRequest(sockInfo *listenSock)
                 strcat(response, to_string(item.second).c_str());
             }
 
-            if (check){
+            if (check)
+            {
                 (*iterator).second.push_back(make_pair(client_listen_ip, client_listen_port));
                 checkExist(client_listen_ip, client_listen_port);
             }
@@ -203,9 +205,68 @@ void listenRequest(sockInfo *listenSock)
             send(clientSocket, response, 1024, 0);
             mtx.unlock();
         }
-        else{
+        else if (!strcmp(requestID, DELETE_FILE_REQUEST))
+        {
+            char hashinfo[HASHINFO_LENGTH + 1];
+            if (sscanf(buffer + 10, "%10s %21s %i", hashinfo, client_listen_ip, &client_listen_port) != 3)
+            {
+                send(clientSocket, "Failed to parse remaining information.", 39, 0);
+                continue;
+            }
+
+            printf("-------Receive DELETE request from %s:%i with file %s-------\n", client_listen_ip, client_listen_port, hashinfo);
             mtx.lock();
-            send(clientSocket, "Unknown request!!", 18,0);
+            vector<pair<char *, int>> *iterator = &hashtable[hashinfo];
+            if (iterator->empty())
+            {
+                send(clientSocket, "File not found", 15, 0);
+                mtx.unlock();
+                continue;
+            }
+            int size = iterator->size();
+            for (int i = 0; i < size; i++)
+            {
+                if (!strcmp(client_listen_ip, (*iterator)[i].first) && client_listen_port == (*iterator)[i].second)
+                {
+                    if (size == 1)
+                    {
+                        (*iterator).clear();
+                        if (listmap.size() == 1)
+                            listmap.clear();
+                        else
+                        {
+                            for (int i = 0; i < listmap.size(); i++)
+                            {
+                                if (!strcmp(listmap[i]->hashinfo, hashinfo))
+                                {
+                                    listmap.erase(listmap.begin() + i);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else
+                        (*iterator).erase((*iterator).begin() + i);
+                    break;
+                }
+            }
+#ifdef DEBUG
+            bool isEmpty = true;
+            for (int i = 1; i <= listmap.size(); i++)
+            {
+                mapinfo *iter = listmap[i];
+                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n", i, iter->name, iter->hashinfo);
+            }
+            if (isEmpty)
+                printf("Don's exist file in system.\n");
+#endif
+            send(clientSocket,"OK",3,0);
+            mtx.unlock();
+        }
+        else
+        {
+            mtx.lock();
+            send(clientSocket, "Unknown request!!", 18, 0);
             mtx.unlock();
         }
     }

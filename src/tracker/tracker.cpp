@@ -12,12 +12,12 @@ int main(int argc, char *argv[])
     listenSocket = init((char *)SERVER_LISTEN_IP, SERVER_LISTEN_PORT);
     listenSocketBackup = init((char *)SERVER_LISTEN_IP_BACKUP, SERVER_LISTEN_PORT_BACKUP);
 
-    // listenRequest();
-    thread lten(listenRequest, &listenSocket);
-    lten.detach();
-    thread ltenback(listenRequest, &listenSocketBackup);
-    ltenback.detach();
-    
+    listenRequest(&listenSocket);
+    // thread lten(listenRequest, &listenSocket);
+    // lten.detach();
+    // thread ltenback(listenRequest, &listenSocketBackup);
+    // ltenback.detach();
+
     // Command-shell interpreter
     printf("Type \"help\" to get infomation\n");
     while (true)
@@ -53,7 +53,8 @@ int main(int argc, char *argv[])
         {
             char ip[16] = {0};
             int port = 0;
-            if(sscanf(input.c_str() + 5, "%15[^:]:%i", ip, &port) != 2){
+            if (sscanf(input.c_str() + 5, "%15[^:]:%i", ip, &port) != 2)
+            {
                 printf("Incorrect syntax. Type 'help' for available commands.");
                 continue;
             };
@@ -68,16 +69,19 @@ int main(int argc, char *argv[])
             running = false;
             break;
         }
-        else if (command == "list"){
+        else if (command == "list")
+        {
             bool isEmpty = true;
-            for (int i = 1 ; i <= listmap.size();i++)
+            for (int i = 1; i <= listmap.size(); i++)
             {
-                mapinfo* iter = listmap[i];
-                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n",i, iter->name, iter->hashinfo);
+                mapinfo *iter = listmap[i];
+                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n", i, iter->name, iter->filesize, iter->hashinfo);
+                isEmpty = false;
             }
-            if(isEmpty)
-                printf("Don's exist file in system.\n");
+            if (isEmpty)
+                printf("No file exists in the system.\n");
         }
+
         else
         {
             cout << "Unknown command. Type 'help' for available commands." << endl;
