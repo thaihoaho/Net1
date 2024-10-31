@@ -45,7 +45,7 @@ inline mutex mtx;
 inline mutex bufferMutex;
 // ADDRESS 
 inline const char *LISTEN_IP = "127.0.0.1";
-inline const int LISTEN_PORT = 8084;
+inline const int LISTEN_PORT = 8083;
 
 sockInfo createSockAddr(char *ip, int port);
 sockInfo init(char *ip, int port);

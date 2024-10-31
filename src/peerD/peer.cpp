@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     printf("Type \"help\" to get infomation\n");
     while (true)
     {
-        std::cout << ">";
         string input;
         getline(cin,input);
 
@@ -83,11 +82,10 @@ int main(int argc, char *argv[])
             string s1= FETCH_REQUEST;
             string s2= LISTEN_IP;
             string s3= to_string(LISTEN_PORT);
-            const char* s4 = (s1 + " " + s2 + " " + s3).c_str();
-            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,const_cast<char*>(s4), 1, remainContent);
-            
-            
-            
+            char s4[1024]= {0};
+            strcpy(s4, const_cast<char*>((s1 + " " + s2 + " " + s3).c_str()));
+            cout << s4 << endl;
+            sendRequest(const_cast<char*>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT,s4, 1, remainContent);
         }
         else{   
             printf("Command \"%s\" undefined!!\n",command.c_str());

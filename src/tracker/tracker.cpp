@@ -23,7 +23,6 @@ int main(int argc, char *argv[])
     while (true)
     {
         string input;
-        cout << ">";
         getline(cin, input);
 
         int index = input.find(' ');
@@ -34,6 +33,7 @@ int main(int argc, char *argv[])
             cout << "Available commands:" << endl;
             cout << "  discover - List all registered peers" << endl;
             cout << "  ping <ip:port> - Check connection between tracker and peer" << endl;
+            cout << "  list - List all files have in system." << endl;
             cout << "  exit - Exit the tracker" << endl;
         }
         else if (command == "discover")

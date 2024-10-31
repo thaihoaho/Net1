@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     printf("Type \"help\" to get infomation\n");
     while (true)
     {
-        std::cout << ">";
+
         string input;
         getline(cin,input);
 
