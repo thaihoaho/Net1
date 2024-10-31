@@ -203,5 +203,10 @@ void listenRequest(sockInfo *listenSock)
             send(clientSocket, response, 1024, 0);
             mtx.unlock();
         }
+        else{
+            mtx.lock();
+            send(clientSocket, "Unknown request!!", 18,0);
+            mtx.unlock();
+        }
     }
 }

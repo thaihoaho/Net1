@@ -68,6 +68,16 @@ int main(int argc, char *argv[])
             running = false;
             break;
         }
+        else if (command == "list"){
+            bool isEmpty = true;
+            for (int i = 1 ; i <= listmap.size();i++)
+            {
+                mapinfo* iter = listmap[i];
+                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n",i, iter->name, iter->hashinfo);
+            }
+            if(isEmpty)
+                printf("Don's exist file in system.\n");
+        }
         else
         {
             cout << "Unknown command. Type 'help' for available commands." << endl;
