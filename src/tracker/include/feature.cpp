@@ -36,3 +36,33 @@ sockInfo init(char *ip, int port)
     }
     return info;
 }
+
+void readSign(){
+    std::ifstream infile("sign.txt");
+    if (infile.is_open())
+    {
+        std::string line= "";
+        std::string ip;
+        std::string port;
+        std::string password;
+        while (getline(infile, line)) {
+            size_t index = line.find(' ');
+            if (index != std::string::npos)
+            {
+                ip = line.substr(0, index);
+                port = line.substr(index + 1);
+
+            } else {
+                password = line;
+                peerinfo* k = new peerinfo(const_cast<char*>(ip.c_str()), stoi(port), const_cast<char*>(password.c_str()));
+                list_peer_info.push_back(k);
+            }
+        }
+        infile.close();
+    }
+    else
+    {
+        std::cerr << "sign.txt cannot be opened\n";
+    }
+
+}

@@ -9,16 +9,16 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Doc file txt => list_active_peer
-
+    readSign();
+                
     listenSocket = init((char *)SERVER_LISTEN_IP, SERVER_LISTEN_PORT);
     listenSocketBackup = init((char *)SERVER_LISTEN_IP_BACKUP, SERVER_LISTEN_PORT_BACKUP);
 
-    listenRequest(&listenSocket);
-    // thread lten(listenRequest, &listenSocket);
-    // lten.detach();
-    // thread ltenback(listenRequest, &listenSocketBackup);
-    // ltenback.detach();
+    //listenRequest(&listenSocket);
+    thread lten(listenRequest, &listenSocket);
+    lten.detach();
+    thread ltenback(listenRequest, &listenSocketBackup);
+    ltenback.detach();
 
     // Command-shell interpreter
     printf("Type \"help\" to get infomation\n");
@@ -33,13 +33,13 @@ int main(int argc, char *argv[])
         if (command == "help")
         {
             cout << "Available commands:" << endl;
-            cout << "  discover - List all registered peers" << endl;
-            cout << "  ping <ip:port> - Check connection between tracker and peer" << endl;
-            cout << "  list - List all files have in system." << endl;
-            cout << "  exit - Exit the tracker" << endl;
+            cout << "  discover         "<< "List all registered peers" << endl;
+            cout << "  ping <ip:port>   "<< "Check connection between tracker and peer" << endl;
+            cout << "  list             "<< "List all files have in system." << endl;
+            cout << "  exit             "<< "Exit the tracker" << endl;
         }
         // Sua
-        else if (command == "discover") 
+        else if (command == "discover")
         {
             if (list_active_peer.empty())
                 printf("The list of all active peer is empty.\n");
@@ -75,10 +75,10 @@ int main(int argc, char *argv[])
         else if (command == "list")
         {
             bool isEmpty = true;
-            for (int i = 0 ; i < listmap.size();i++)
+            for (int i = 0; i < listmap.size(); i++)
             {
-                mapinfo* iter = listmap[i];
-                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n",i + 1, iter->name, iter->filesize ,iter->hashinfo);
+                mapinfo *iter = listmap[i];
+                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n", i + 1, iter->name, iter->filesize, iter->hashinfo);
                 isEmpty = false;
             }
             if (isEmpty)

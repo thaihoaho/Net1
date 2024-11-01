@@ -44,7 +44,7 @@ struct peerinfo{
     peerinfo(char* i, int p, char* pass){
         ip = strdup(i);
         port = p;
-        pass = strdup(pass);
+        password = strdup(pass);
     }
 };
 inline vector<peerinfo*> list_peer_info; // storage all registed peer information
@@ -64,5 +64,7 @@ void listenRequest(sockInfo *listenSock);
 void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset);
 
 void sendRequest(char *ip, int port, char *buffer);
+
+void readSign();
 #endif
     
