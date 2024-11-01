@@ -10,11 +10,24 @@ void waitData(SOCKET *socket, bool flag, char *buffer)
     {
         cerr << "Receive failed: " << WSAGetLastError() << endl;
     }
-    else
+
+    char requestID[11] = {0};
+    sscanf(buffer, "%11s", requestID);
+    char name[100] = {0}, hashinfo[11] = {0};
+    int filesize;
+    if (!strcmp(requestID, FETCH_REQUEST))
     {
-        buffer[bytesRead] = '\0'; // Null-terminate the bufferr
-        printf("Received %i bytes:\n%s\n", bytesRead, buffer);
+        int position = 11;
+        int count = 1;
+        while (position < bytesRead)
+        {
+            if(sscanf(buffer + position ,"%99s %10s %i",name, hashinfo, &filesize) != 3)
+                break;
+            position += strlen(name) + strlen(hashinfo) + strlen(to_string(filesize).c_str()) + 3;
+            printf("%i. Name: %s, hashinfo: %s, filesize: %i bytes\n",count++, name, hashinfo,filesize);
+        }
     }
+
     closesocket(*socket);
 }
 void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
@@ -61,11 +74,12 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
                     end = pos - downBuffer;
                     fname.assign(downBuffer + start, end - start);
                     s = true;
-                    if (strcmp(filename.c_str(), fname.c_str()) == 0){
+                    if (strcmp(filename.c_str(), fname.c_str()) == 0)
+                    {
                         pos++;
-                        break; 
+                        break;
                     }
-                        
+
                     continue;
                 }
             }
@@ -169,9 +183,9 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
         {
             std::cout << i.first << " " << i.second << std::endl;
         }
-        const char* filepath = "files/";
+        const char *filepath = "files/";
         size_t length = std::strlen(filepath) + name.length() + 1;
-        char* result = new char[length];
+        char *result = new char[length];
         std::strcpy(result, filepath);
         std::strcat(result, name.c_str());
         sendRequestNthread(v, const_cast<char *>(result), stoi(size));
