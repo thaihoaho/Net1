@@ -9,15 +9,17 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    readSign();
+                
     listenSocket = init((char *)SERVER_LISTEN_IP, SERVER_LISTEN_PORT);
     listenSocketBackup = init((char *)SERVER_LISTEN_IP_BACKUP, SERVER_LISTEN_PORT_BACKUP);
 
-    // listenRequest();
+    // listenRequest(&listenSocket);
     thread lten(listenRequest, &listenSocket);
     lten.detach();
     thread ltenback(listenRequest, &listenSocketBackup);
     ltenback.detach();
-    
+
     // Command-shell interpreter
     printf("Type \"help\" to get infomation\n");
     while (true)
@@ -31,11 +33,13 @@ int main(int argc, char *argv[])
         if (command == "help")
         {
             cout << "Available commands:" << endl;
-            cout << "  discover - List all registered peers" << endl;
-            cout << "  ping <ip:port> - Check connection between tracker and peer" << endl;
-            cout << "  list - List all files have in system." << endl;
-            cout << "  exit - Exit the tracker" << endl;
+            cout << "  discover         "<< "List all registered peers" << endl;
+            cout << "  ping <ip:port>   "<< "Check connection between tracker and peer" << endl;
+            cout << "  list             "<< "List all files have in system." << endl;
+            cout << "  listadv          "<< "List all files have in system with address of peers have it." << endl;
+            cout << "  exit             "<< "Exit the tracker" << endl;
         }
+        // Sua
         else if (command == "discover")
         {
             if (list_active_peer.empty())
@@ -43,9 +47,14 @@ int main(int argc, char *argv[])
             else
             {
                 printf("The list of all active peer.\n");
-                for (auto &iter : list_active_peer)
+                for (int i = 0 ; i < list_active_peer.size();i++)
                 {
-                    printf("%s:%i\n", iter.first, iter.second);
+                    if (!sendRequest(list_active_peer[i].first, list_active_peer[i].second, const_cast<char *>(PING_REQUEST), false))
+                    {
+                        list_active_peer.erase(list_active_peer.begin() + i);
+                    }
+                    else
+                        printf("%s:%i\n", list_active_peer[i].first, list_active_peer[i].second);
                 }
             }
         }
@@ -53,14 +62,15 @@ int main(int argc, char *argv[])
         {
             char ip[16] = {0};
             int port = 0;
-            if(sscanf(input.c_str() + 5, "%15[^:]:%i", ip, &port) != 2){
+            if (sscanf(input.c_str() + 5, "%15[^:]:%i", ip, &port) != 2)
+            {
                 printf("Incorrect syntax. Type 'help' for available commands.");
                 continue;
             };
 #ifdef DEBUG
             printf("ip:%s , port:%i\n", ip, port);
 #endif
-            sendRequest(ip, port, const_cast<char *>(PING_REQUEST));
+            sendRequest(ip, port, const_cast<char *>(PING_REQUEST), true);
         }
         else if (command == "exit")
         {
@@ -68,16 +78,33 @@ int main(int argc, char *argv[])
             running = false;
             break;
         }
-        else if (command == "list"){
+        else if (command == "list")
+        {
             bool isEmpty = true;
-            for (int i = 0 ; i < listmap.size();i++)
+            for (int i = 0; i < listmap.size(); i++)
             {
-                mapinfo* iter = listmap[i];
-                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n",i + 1, iter->name, iter->filesize ,iter->hashinfo);
+                mapinfo *iter = listmap[i];
+                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n", i + 1, iter->name, iter->filesize, iter->hashinfo);
                 isEmpty = false;
             }
-            if(isEmpty)
-                printf("Don's exist file in system.\n");
+            if (isEmpty)
+                printf("No file exists in the system.\n");
+        }
+        else if (command == "listadv")
+        {
+            bool isEmpty = true;
+            for (int i = 0; i < listmap.size(); i++)
+            {
+                mapinfo *iter = listmap[i];
+                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n", i + 1, iter->name, iter->filesize, iter->hashinfo);
+                for (auto &iter : hashtable[iter->hashinfo])
+                {
+                    printf("    %s:%i\n", iter.first, iter.second);
+                }
+                isEmpty = false;
+            }
+            if (isEmpty)
+                printf("No file exists in the system.\n");
         }
         else
         {

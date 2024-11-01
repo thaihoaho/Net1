@@ -2,7 +2,7 @@
 #include "INFO.h"
 
 // send data of sender
-void sendData(SOCKET *sendedSocket, char* path, int pieceSize, int pieceOffset)
+void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset)
 {
     char buffer[1024] = {0};
     ifstream readfile(path, ostream::binary);
@@ -12,7 +12,7 @@ void sendData(SOCKET *sendedSocket, char* path, int pieceSize, int pieceOffset)
 
     int bytesSent = send(*sendedSocket, buffer, pieceSize, 0);
 
-    //TODO
+    // TODO
 
     while (bytesSent <= 0)
     {
@@ -35,7 +35,7 @@ void listenRequest()
             cerr << "Accept failed: " << WSAGetLastError() << endl;
             continue;
         }
-       char buffer[1024] = {0};
+        char buffer[1024] = {0};
         int bytesRead = recv(clientSocket, buffer, 1024, 0);
         std::string str(buffer);
         std::istringstream iss(str);
@@ -47,41 +47,42 @@ void listenRequest()
         std::getline(iss, number2, '-');
         std::getline(iss, number3, '-');
 
-        const char* requestID = number1.c_str();
+        const char *requestID = number1.c_str();
 
         // receive request send file
         if (strcmp(requestID, DOWN_REQUEST) == 0)
         {
-            printf("Thread of server receive %i bytes\n%s\n", bytesRead, buffer);
-            const char* fileName  = name.c_str();
+            const char *fileName = name.c_str();
             int offset = stoi(number2);
-            int partSize = stoi(number3); 
-            thread(sendFileNthread,&clientSocket, fileName, offset, partSize).detach();
-        }
-        if (strcmp(requestID, PING_REQUEST) == 0){
-            printf("Thread of server receive %i bytes\n%s\n", bytesRead, buffer);
+            int partSize = stoi(number3);
+            thread(sendFileNthread, &clientSocket, fileName, offset, partSize).detach();
         }
     }
 }
 
-void sendFileNthread(SOCKET* clientSocket, const char *filePath, int offset, long required) {
-    // std::string filePath = "files/";
-    // filePath += fileName;
+void sendFileNthread(SOCKET *clientSocket, const char *filePath, int offset, long required)
+{
+    mtx.lock();
+
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         std::cerr << "Could not open file: " << filePath << std::endl;
         return;
     }
 
-    file.seekg(offset*required, std::ios::beg);
+    file.seekg(offset * required, std::ios::beg);
     char buffer[512000];
-    while ((file.read(buffer, 512000) || file.gcount() > 0) && required > 0) {
+    while ((file.read(buffer, 512000) || file.gcount() > 0) && required > 0)
+    {
         std::streamsize bytesRead = file.gcount();
         int totalBytesSent = 0;
 
-        while (totalBytesSent < bytesRead) {
+        while (totalBytesSent < bytesRead)
+        {
             int bytesSent = send(*clientSocket, buffer + totalBytesSent, bytesRead - totalBytesSent, 0);
-            if (bytesSent == SOCKET_ERROR) {
+            if (bytesSent == SOCKET_ERROR)
+            {
                 std::cerr << "Error sending file chunk." << std::endl;
                 return;
             }
@@ -91,5 +92,7 @@ void sendFileNthread(SOCKET* clientSocket, const char *filePath, int offset, lon
         required -= totalBytesSent;
     }
     file.close();
+    mtx.unlock();
+
     closesocket(*clientSocket);
 }
