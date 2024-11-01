@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     listenSocket = init((char *)SERVER_LISTEN_IP, SERVER_LISTEN_PORT);
     listenSocketBackup = init((char *)SERVER_LISTEN_IP_BACKUP, SERVER_LISTEN_PORT_BACKUP);
 
-    //listenRequest(&listenSocket);
+    // listenRequest(&listenSocket);
     thread lten(listenRequest, &listenSocket);
     lten.detach();
     thread ltenback(listenRequest, &listenSocketBackup);
@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
             cout << "  discover         "<< "List all registered peers" << endl;
             cout << "  ping <ip:port>   "<< "Check connection between tracker and peer" << endl;
             cout << "  list             "<< "List all files have in system." << endl;
+            cout << "  listadv          "<< "List all files have in system with address of peers have it." << endl;
             cout << "  exit             "<< "Exit the tracker" << endl;
         }
         // Sua
@@ -53,7 +54,7 @@ int main(int argc, char *argv[])
                         list_active_peer.erase(list_active_peer.begin() + i);
                     }
                     else
-                        printf("%s:%i\n", list_active_peer[i].first, list_active_peer[i].first);
+                        printf("%s:%i\n", list_active_peer[i].first, list_active_peer[i].second);
                 }
             }
         }

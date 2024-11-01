@@ -84,7 +84,6 @@ int main(int argc, char *argv[])
                         strcat(request, to_string(pieces).c_str());
                         strcat(request, " ");
                         strcat(request, to_string(512000).c_str());
-                        std::cout << request << std::endl;
                         sendRequest(const_cast<char *>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request, 0);
                     }
                 }
@@ -168,7 +167,6 @@ int main(int argc, char *argv[])
             strcat(request, to_string(pieces).c_str());
             strcat(request, " ");
             strcat(request, to_string(512000).c_str());
-            std::cout << request << std::endl;
             sendRequest(const_cast<char *>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request, 0);
         }
         else if (command == "down")

@@ -5,18 +5,20 @@
 void waitData(SOCKET *socket, bool flag, char *buffer)
 {
     int bytesRead = recv(*socket, buffer, 1023, 0);
+    char requestID[11] = {0};
+    sscanf(buffer, "%11s", requestID);
+
 
     if (bytesRead <= 0)
     {
         cerr << "Receive failed: " << WSAGetLastError() << endl;
     }
-    else if(bytesRead < 1024){
+    else if(strcmp(requestID, FETCH_REQUEST) && bytesRead < 1024){
         cout << buffer << endl;
     }
     
 
-    char requestID[11] = {0};
-    sscanf(buffer, "%11s", requestID);
+    
     char name[100] = {0}, hashinfo[11] = {0};
     int filesize;
     if (!strcmp(requestID, FETCH_REQUEST))
@@ -91,8 +93,6 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
             pos++;
         }
 
-        std::cout << "Filename: " << fname << std::endl;
-
         strncpy(hashinfo, pos, 10);
         strcat(request, "1010101010");
         strcat(request, " ");
@@ -101,7 +101,6 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
         strcat(request, LISTEN_IP);
         strcat(request, " ");
         strcat(request, to_string(LISTEN_PORT).c_str());
-        std::cout << request << std::endl;
         sendRequest(ip, port, request, flag);
     }
     else if (flag == 2)
@@ -183,10 +182,6 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
                 }
             }
             pos++;
-        }
-        for (std::pair<std::string, int> i : v)
-        {
-            std::cout << i.first << " " << i.second << std::endl;
         }
         const char *filepath = "files/";
         size_t length = std::strlen(filepath) + name.length() + 1;

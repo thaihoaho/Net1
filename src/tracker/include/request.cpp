@@ -97,7 +97,7 @@ void listenRequest(sockInfo *listenSock)
             mtx.lock();
             for (auto &iter : list_peer_info)
             {
-                if (!strcmp(client_listen_ip, iter->ip) && client_listen_port == iter->port && !strcmp(password, iter->password))
+                if (!strcmp(client_listen_ip, iter->ip) && client_listen_port == iter->port)
                 {
                     check = false;
                     if (!strcmp(password, iter->password))

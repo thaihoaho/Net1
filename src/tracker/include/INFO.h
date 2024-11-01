@@ -63,7 +63,7 @@ sockInfo init(char *ip, int port);
 void listenRequest(sockInfo *listenSock);
 void sendData(SOCKET *sendedSocket, char *path, int pieceSize, int pieceOffset);
 
-void sendRequest(char *ip, int port, char *buffer, bool pri);
+bool sendRequest(char *ip, int port, char *buffer, bool pri);
 
 void readSign();
 #endif
