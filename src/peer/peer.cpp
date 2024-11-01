@@ -28,7 +28,11 @@ int main(int argc, char *argv[])
 
         if (command == "help")
         {
-            printf("Help request\n");
+            cout << "Available commands:" << endl;
+            cout << "  publish <file name> - To upload file info to system" << endl;
+            cout << "  fetch - Console all file info in system" << endl;
+            cout << "  list - List all files in files folder" << endl;
+            cout << "  down <file name> [<file name> ...] - Download one or multiple files" << endl;
         }
         else if (command == "list")
         {

@@ -178,7 +178,7 @@ void listenRequest(sockInfo *listenSock)
             if (!hashtable[hashinfo].empty())
             {
                 printf("%s:%i>>File with hashinfo: %s has been existed in system\n", client_listen_ip, client_listen_port, hashinfo);
-                send(clientSocket, "file existed", 10, 0);
+                send(clientSocket, "File existed", 10, 0);
 
                 add_into_hashtable(&hashtable[hashinfo], client_listen_ip, client_listen_port);
 
@@ -279,7 +279,7 @@ void listenRequest(sockInfo *listenSock)
             auto iterator = hashtable.find(hashinfo);
             if (iterator == hashtable.end())
             {
-                send(clientSocket, "File not found", 1024, 0);
+                send(clientSocket, "File not found", 15, 0);
                 mtx.unlock();
                 continue;
             }

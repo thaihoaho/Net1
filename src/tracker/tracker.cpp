@@ -36,19 +36,25 @@ int main(int argc, char *argv[])
             cout << "  discover - List all registered peers" << endl;
             cout << "  ping <ip:port> - Check connection between tracker and peer" << endl;
             cout << "  list - List all files have in system." << endl;
+            cout << "  listadv - List all files have in system with address of peers have file." << endl;
             cout << "  exit - Exit the tracker" << endl;
         }
         // Sua
-        else if (command == "discover") 
+        else if (command == "discover")
         {
             if (list_active_peer.empty())
                 printf("The list of all active peer is empty.\n");
             else
             {
                 printf("The list of all active peer.\n");
-                for (auto &iter : list_active_peer)
+                for (int i = 0 ; i < list_active_peer.size();i++)
                 {
-                    printf("%s:%i\n", iter.first, iter.first);
+                    if (!sendRequest(list_active_peer[i].first, list_active_peer[i].second, const_cast<char *>(PING_REQUEST), false))
+                    {
+                        list_active_peer.erase(list_active_peer.begin() + i);
+                    }
+                    else
+                        printf("%s:%i\n", list_active_peer[i].first, list_active_peer[i].first);
                 }
             }
         }
@@ -64,7 +70,7 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
             printf("ip:%s , port:%i\n", ip, port);
 #endif
-            sendRequest(ip, port, const_cast<char *>(PING_REQUEST));
+            sendRequest(ip, port, const_cast<char *>(PING_REQUEST), true);
         }
         else if (command == "exit")
         {
@@ -75,10 +81,10 @@ int main(int argc, char *argv[])
         else if (command == "list")
         {
             bool isEmpty = true;
-            for (int i = 0 ; i < listmap.size();i++)
+            for (int i = 0; i < listmap.size(); i++)
             {
-                mapinfo* iter = listmap[i];
-                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n",i + 1, iter->name, iter->filesize ,iter->hashinfo);
+                mapinfo *iter = listmap[i];
+                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n", i + 1, iter->name, iter->filesize, iter->hashinfo);
                 isEmpty = false;
             }
             if (isEmpty)
@@ -87,11 +93,11 @@ int main(int argc, char *argv[])
         else if (command == "listadv")
         {
             bool isEmpty = true;
-            for (int i = 0 ; i < listmap.size();i++)
+            for (int i = 0; i < listmap.size(); i++)
             {
-                mapinfo* iter = listmap[i];
-                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n",i + 1, iter->name, iter->filesize ,iter->hashinfo);
-                for (auto& iter : hashtable[iter->hashinfo])
+                mapinfo *iter = listmap[i];
+                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n", i + 1, iter->name, iter->filesize, iter->hashinfo);
+                for (auto &iter : hashtable[iter->hashinfo])
                 {
                     printf("    %s:%i\n", iter.first, iter.second);
                 }

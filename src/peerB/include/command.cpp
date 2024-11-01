@@ -10,6 +10,10 @@ void waitData(SOCKET *socket, bool flag, char *buffer)
     {
         cerr << "Receive failed: " << WSAGetLastError() << endl;
     }
+    else if(bytesRead < 1024){
+        cout << buffer << endl;
+    }
+    
 
     char requestID[11] = {0};
     sscanf(buffer, "%11s", requestID);

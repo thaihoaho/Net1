@@ -58,7 +58,7 @@ void listenRequest()
             int partSize = stoi(number3); 
             thread(sendFileNthread,&clientSocket, fileName, offset, partSize).detach();
         }
-        if (strcmp(requestID, PING_REQUEST) == 0){
+        else if (strcmp(requestID, PING_REQUEST) == 0){
             printf("Thread of server receive %i bytes\n%s\n", bytesRead, buffer);
         }
     }
