@@ -1,6 +1,6 @@
 #ifndef ALL
 #define ALL
-#define DEBUG
+// #define DEBUG
 inline const char* PUBLISH_REQUEST = "1111111111";
 inline const char* FETCH_REQUEST = "1111100000";
 inline const char* DOWN_REQUEST = "1010101010";
