@@ -9,14 +9,16 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // Doc file txt => list_active_peer
+
     listenSocket = init((char *)SERVER_LISTEN_IP, SERVER_LISTEN_PORT);
     listenSocketBackup = init((char *)SERVER_LISTEN_IP_BACKUP, SERVER_LISTEN_PORT_BACKUP);
 
-    // listenRequest(&listenSocket);
-    thread lten(listenRequest, &listenSocket);
-    lten.detach();
-    thread ltenback(listenRequest, &listenSocketBackup);
-    ltenback.detach();
+    listenRequest(&listenSocket);
+    // thread lten(listenRequest, &listenSocket);
+    // lten.detach();
+    // thread ltenback(listenRequest, &listenSocketBackup);
+    // ltenback.detach();
 
     // Command-shell interpreter
     printf("Type \"help\" to get infomation\n");
@@ -36,7 +38,8 @@ int main(int argc, char *argv[])
             cout << "  list - List all files have in system." << endl;
             cout << "  exit - Exit the tracker" << endl;
         }
-        else if (command == "discover")
+        // Sua
+        else if (command == "discover") 
         {
             if (list_active_peer.empty())
                 printf("The list of all active peer is empty.\n");
@@ -45,7 +48,7 @@ int main(int argc, char *argv[])
                 printf("The list of all active peer.\n");
                 for (auto &iter : list_active_peer)
                 {
-                    printf("%s:%i\n", iter.first, iter.second);
+                    printf("%s:%i\n", iter.first, iter.first);
                 }
             }
         }

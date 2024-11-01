@@ -60,15 +60,9 @@ int main(int argc, char *argv[])
             strcat(request, LISTEN_IP);
             strcat(request, " ");
             strcat(request, to_string(LISTEN_PORT).c_str());
-<<<<<<< HEAD
-            strcat(request, " ");
-            strcat(request, generateHashinfo(name, filesize, pieces, 512000));
-            strcat(request, " ");
-=======
             strcat(request," ");
             strcat(request, generateHashinfo(name, filesize));
             strcat(request," ");
->>>>>>> origin
             strcat(request, name.c_str());
             strcat(request, " ");
             strcat(request, to_string(filesize).c_str());

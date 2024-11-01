@@ -6,6 +6,9 @@ inline const char* FETCH_REQUEST = "1111100000";
 inline const char* DOWN_REQUEST = "1010101010";
 inline const char* PING_REQUEST = "1000000001";
 inline const char* DELETE_FILE_REQUEST = "1110001110";
+inline const char* REGISTER_REQUEST = "1100101101";
+inline const char* SIGNIN_REQUEST = "1110001110";
+inline const char* SIGNOUT_REQUEST = "0011010101";
 inline const int REQUEST_ID_LENGTH = 10;
 inline const int HASHINFO_LENGTH = 10;
 

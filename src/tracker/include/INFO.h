@@ -36,16 +36,22 @@ struct mapinfo
         delete[] name;      
     }
 };
-inline vector<mapinfo*> listmap;
+inline vector<mapinfo*> listmap; // storage information of files in system
 struct peerinfo{
-    char* username;
+    char* ip;
+    int port;
     char* password;
-    
+    peerinfo(char* i, int p, char* pass){
+        ip = strdup(i);
+        port = p;
+        pass = strdup(pass);
+    }
 };
-inline vector<pair<char*,int>> list_active_peer;
+inline vector<peerinfo*> list_peer_info; // storage all registed peer information
+inline vector<pair<char*,int>> list_active_peer; // storage all active peer address
 inline unordered_map<string, vector<pair<char*, int>>> hashtable; // storage all peer address has a file with hashinfo
 inline bool running = true;
-inline char ping_request[33] = {'0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',0};
+inline char ping_request[33] = "000000000000000000000000000000\0";
 // SOCKET
 inline sockInfo listenSocket;
 inline sockInfo listenSocketBackup;
