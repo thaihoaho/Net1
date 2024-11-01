@@ -9,12 +9,12 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Doc file txt => list_active_peer
-
+    readSign();
+                
     listenSocket = init((char *)SERVER_LISTEN_IP, SERVER_LISTEN_PORT);
     listenSocketBackup = init((char *)SERVER_LISTEN_IP_BACKUP, SERVER_LISTEN_PORT_BACKUP);
 
-    // listenRequest(&listenSocket);
+    //listenRequest(&listenSocket);
     thread lten(listenRequest, &listenSocket);
     lten.detach();
     thread ltenback(listenRequest, &listenSocketBackup);
@@ -33,11 +33,10 @@ int main(int argc, char *argv[])
         if (command == "help")
         {
             cout << "Available commands:" << endl;
-            cout << "  discover - List all registered peers" << endl;
-            cout << "  ping <ip:port> - Check connection between tracker and peer" << endl;
-            cout << "  list - List all files have in system." << endl;
-            cout << "  listadv - List all files have in system with address of peers have file." << endl;
-            cout << "  exit - Exit the tracker" << endl;
+            cout << "  discover         "<< "List all registered peers" << endl;
+            cout << "  ping <ip:port>   "<< "Check connection between tracker and peer" << endl;
+            cout << "  list             "<< "List all files have in system." << endl;
+            cout << "  exit             "<< "Exit the tracker" << endl;
         }
         // Sua
         else if (command == "discover")

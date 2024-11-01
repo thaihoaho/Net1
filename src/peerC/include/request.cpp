@@ -65,8 +65,7 @@ void listenRequest()
 }
 
 void sendFileNthread(SOCKET* clientSocket, const char *filePath, int offset, long required) {
-    // std::string filePath = "files/";
-    // filePath += fileName;
+
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
         std::cerr << "Could not open file: " << filePath << std::endl;

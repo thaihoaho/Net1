@@ -44,7 +44,7 @@ void listenRequest(sockInfo *listenSock)
         if (!strcmp(requestID, REGISTER_REQUEST))
         {
             char password[41] = {0};
-            if (sscanf(buffer + 11, "%21[^:]:%i %40s", client_listen_ip, &client_listen_port, password) != 3)
+            if (sscanf(buffer + 11, "%21s %i %40s", client_listen_ip, &client_listen_port, password) != 3)
             {
                 send(clientSocket, "Failed to parse remaining information.", 39, 0);
                 continue;
@@ -70,6 +70,16 @@ void listenRequest(sockInfo *listenSock)
             list_peer_info.push_back(new peerinfo(client_listen_ip, client_listen_port, password));
 
             // TODO: add into txt file
+            std::ofstream outfile("sign.txt", std::ios::app);
+            if (outfile.is_open())
+            {
+                outfile << client_listen_ip <<" "<< client_listen_port << "\n" << password << "\n";
+                outfile.close();
+            }
+            else
+            {
+                std::cerr << "file sign.txt is missing.\n";
+            }
 
             send(clientSocket, "OK", 3, 0);
             mtx.unlock();
@@ -77,7 +87,7 @@ void listenRequest(sockInfo *listenSock)
         else if (!strcmp(requestID, SIGNIN_REQUEST))
         {
             char password[41] = {0};
-            if (sscanf(buffer + 11, "%21[^:]:%i %40s", client_listen_ip, &client_listen_port, password) != 3)
+            if (sscanf(buffer + 11, "%21s %i %40s", client_listen_ip, &client_listen_port, password) != 3)
             {
                 send(clientSocket, "Failed to parse remaining information.", 39, 0);
                 continue;
@@ -102,13 +112,13 @@ void listenRequest(sockInfo *listenSock)
             }
             if (check)
             {
-                send(clientSocket, "Didn't file user. Make sure you have been registed!", 52, 0);
+                send(clientSocket, "Didn't find user. Make sure you have been registed!", 52, 0);
             }
             mtx.unlock();
         }
         else if (!strcmp(requestID, SIGNOUT_REQUEST))
         {
-            if (sscanf(buffer + 11, "%21[^:]:%i", client_listen_ip, &client_listen_port) != 2)
+            if (sscanf(buffer + 11, "%21s %i", client_listen_ip, &client_listen_port) != 2)
             {
                 send(clientSocket, "Failed to parse remaining information.", 39, 0);
                 continue;
