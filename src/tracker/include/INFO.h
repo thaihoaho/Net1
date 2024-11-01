@@ -44,7 +44,7 @@ struct peerinfo{
     peerinfo(char* i, int p, char* pass){
         ip = strdup(i);
         port = p;
-        pass = strdup(pass);
+        password = strdup(pass);
     }
 };
 inline vector<peerinfo*> list_peer_info; // storage all registed peer information

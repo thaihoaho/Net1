@@ -14,11 +14,11 @@ int main(int argc, char *argv[])
     listenSocket = init((char *)SERVER_LISTEN_IP, SERVER_LISTEN_PORT);
     listenSocketBackup = init((char *)SERVER_LISTEN_IP_BACKUP, SERVER_LISTEN_PORT_BACKUP);
 
-    listenRequest(&listenSocket);
-    // thread lten(listenRequest, &listenSocket);
-    // lten.detach();
-    // thread ltenback(listenRequest, &listenSocketBackup);
-    // ltenback.detach();
+    // listenRequest(&listenSocket);
+    thread lten(listenRequest, &listenSocket);
+    lten.detach();
+    thread ltenback(listenRequest, &listenSocketBackup);
+    ltenback.detach();
 
     // Command-shell interpreter
     printf("Type \"help\" to get infomation\n");
@@ -84,7 +84,22 @@ int main(int argc, char *argv[])
             if (isEmpty)
                 printf("No file exists in the system.\n");
         }
-
+        else if (command == "listadv")
+        {
+            bool isEmpty = true;
+            for (int i = 0 ; i < listmap.size();i++)
+            {
+                mapinfo* iter = listmap[i];
+                printf("%i. Name: %s, filesize: %i, hashinfo: %s\n",i + 1, iter->name, iter->filesize ,iter->hashinfo);
+                for (auto& iter : hashtable[iter->hashinfo])
+                {
+                    printf("    %s:%i\n", iter.first, iter.second);
+                }
+                isEmpty = false;
+            }
+            if (isEmpty)
+                printf("No file exists in the system.\n");
+        }
         else
         {
             cout << "Unknown command. Type 'help' for available commands." << endl;
