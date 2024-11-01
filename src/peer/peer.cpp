@@ -121,20 +121,12 @@ int main(int argc, char *argv[])
 
         if (command == "help")
         {
-<<<<<<< HEAD
-            cout << "Available commands:" << endl;
-            cout << "  publish <file name> - To upload file info to system" << endl;
-            cout << "  fetch - Console all file info in system" << endl;
-            cout << "  list - List all files in files folder" << endl;
-            cout << "  down <file name> [<file name> ...] - Download one or multiple files" << endl;
-=======
             std::cout << "Available commands:" << std::endl;
             std::cout << " list                 " << "List all files in files/ that are available for sharing" << std::endl;
             std::cout << " fetch                " << "List all files that are available for downloading" << std::endl;
             std::cout << " publish <filename>   " << "Share a file with other peers (become a seeder)" << std::endl;
             std::cout << " down <filename>      " << "Download a file from other peer(s)" << std::endl;
             std::cout << " logout               " << "Leave the network" << std::endl;
->>>>>>> 5099fadf8bc9e366fb3b29428cd65a8b67cd171c
         }
         else if (command == "list")
         {

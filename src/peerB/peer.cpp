@@ -121,20 +121,12 @@ int main(int argc, char *argv[])
 
         if (command == "help")
         {
-<<<<<<< HEAD
-            cout << "Available commands:" << endl;
-            cout << "  publish <file name> - To upload file info to system" << endl;
-            cout << "  fetch - Console all file info in system" << endl;
-            cout << "  list - List all files in files folder" << endl;
-            cout << "  down <file name> [<file name> ...] - Download one or multiple files" << endl;
-=======
             std::cout << "Available commands:" << std::endl;
             std::cout << " list                 " << "List all files in files/ that are available for sharing" << std::endl;
             std::cout << " fetch                " << "List all files that are available for downloading" << std::endl;
             std::cout << " publish <filename>   " << "Share a file with other peers (become a seeder)" << std::endl;
             std::cout << " down <filename>      " << "Download a file from other peer(s)" << std::endl;
             std::cout << " logout               " << "Leave the network" << std::endl;
->>>>>>> 5099fadf8bc9e366fb3b29428cd65a8b67cd171c
         }
         else if (command == "list")
         {
@@ -182,15 +174,11 @@ int main(int argc, char *argv[])
         else if (command == "down")
         {
             string remainContent = (input.substr(index + 1, input.length() - index - 1) + '\0');
-<<<<<<< HEAD
-            if (remainContent.find(' ') != -1)
-=======
             std::vector<std::string> fileNames;
             std::istringstream stream(remainContent);
             std::string fileName;
 
             while (stream >> fileName)
->>>>>>> 5099fadf8bc9e366fb3b29428cd65a8b67cd171c
             {
                 fileNames.push_back(fileName);
             }
@@ -205,16 +193,6 @@ int main(int argc, char *argv[])
                 threads[i] = std::thread(sendRequest,const_cast<char *>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, s4, 1, fileNames[i]);
             }
 
-<<<<<<< HEAD
-            string s1 = FETCH_REQUEST;
-            string s2 = LISTEN_IP;
-            string s3 = to_string(LISTEN_PORT);
-            char s4[1024] = {0};
-            strcpy(s4, const_cast<char *>((s1 + " " + s2 + " " + s3).c_str()));
-            cout << s4 << endl;
-            sendRequest(const_cast<char *>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, s4, 1, remainContent);
-        }
-=======
             for (auto &t : threads)
             {
                 if (t.joinable())
@@ -233,7 +211,6 @@ int main(int argc, char *argv[])
             strcat(request, to_string(LISTEN_PORT).c_str());
             sendRequest(const_cast<char *>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request, 0);
         }
->>>>>>> 5099fadf8bc9e366fb3b29428cd65a8b67cd171c
         else
         {
             printf("Command \"%s\" undefined!!\n", command.c_str());
