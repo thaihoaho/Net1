@@ -62,8 +62,6 @@ void listenRequest()
 
 void sendFileNthread(SOCKET *clientSocket, const char *filePath, int offset, long required)
 {
-    mtx.lock();
-
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if (!file.is_open())
     {
@@ -92,7 +90,6 @@ void sendFileNthread(SOCKET *clientSocket, const char *filePath, int offset, lon
         required -= totalBytesSent;
     }
     file.close();
-    mtx.unlock();
 
     closesocket(*clientSocket);
 }
