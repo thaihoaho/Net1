@@ -50,6 +50,8 @@ void listenRequest(sockInfo *listenSock)
                 continue;
             }
 
+            printf("-------Receive REGISTER request from %s:%i-------\n", client_listen_ip, client_listen_port);
+
             mtx.lock();
             bool registed = false;
             for (auto &iter : list_peer_info)
@@ -93,6 +95,9 @@ void listenRequest(sockInfo *listenSock)
                 continue;
             }
 
+            printf("-------Receive SIGNIN request from %s:%i-------\n", client_listen_ip, client_listen_port);
+
+
             bool check = true;
             mtx.lock();
             for (auto &iter : list_peer_info)
@@ -123,6 +128,9 @@ void listenRequest(sockInfo *listenSock)
                 send(clientSocket, "Failed to parse remaining information.", 39, 0);
                 continue;
             }
+
+            printf("-------Receive SIGNOUT request from %s:%i-------\n", client_listen_ip, client_listen_port);
+
 
             mtx.lock();
             // check in list_actice_peer to remove it

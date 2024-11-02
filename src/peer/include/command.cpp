@@ -185,6 +185,7 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
             }
             pos++;
         }
+        
         const char *filepath = "files/";
         size_t length = std::strlen(filepath) + name.length() + 1;
         char *result = new char[length];
