@@ -139,7 +139,7 @@ void listenRequest(sockInfo *listenSock)
             // check in hashtable to remove each file the has
             for (auto &iter : hashtable)
             {
-                vector<pair<char *, int>> *vect;
+                vector<pair<char *, int>> *vect = &(iter.second);
                 int size = (*vect).size();
                 for (int in = 0; in < size; in++)
                 {
