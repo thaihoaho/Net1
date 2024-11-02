@@ -101,7 +101,9 @@ void sendRequest(char *ip, int port, char *buffer, int flag, string filename)
         strcat(request, LISTEN_IP);
         strcat(request, " ");
         strcat(request, to_string(LISTEN_PORT).c_str());
+        mtx.lock();
         sendRequest(ip, port, request, flag);
+        mtx.unlock();
     }
     else if (flag == 2)
     {
