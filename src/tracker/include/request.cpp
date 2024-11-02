@@ -140,7 +140,7 @@ void listenRequest(sockInfo *listenSock)
             for (auto &iter : hashtable)
             {
                 vector<pair<char *, int>> *vect;
-                int size = vect->size();
+                int size = (*vect).size();
                 for (int in = 0; in < size; in++)
                 {
                     if (!strcmp((*vect)[in].first, client_listen_ip) && client_listen_port == (*vect)[in].second)

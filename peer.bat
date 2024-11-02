@@ -7,7 +7,7 @@ echo.
 
 set "peer_name=%1"
 echo %peer_name% compiling...
-g++ -o src/%peer_name%/peer.exe src/%peer_name%/peer.cpp src/%peer_name%/include/feature.cpp src/%peer_name%/include/request.cpp src/%peer_name%/include/command.cpp -lws2_32
+@REM g++ -o src/%peer_name%/peer.exe src/%peer_name%/peer.cpp src/%peer_name%/include/feature.cpp src/%peer_name%/include/request.cpp src/%peer_name%/include/command.cpp -lws2_32
 echo Compile successfully!
 cd src\%peer_name%
 .\peer.exe
