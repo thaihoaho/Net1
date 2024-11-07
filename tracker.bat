@@ -1,8 +1,6 @@
 @echo off
 title Tracker
-echo ========================================================================================================================
 call :print_ascii "Tracker"
-echo ========================================================================================================================
 echo.
 echo TRACKER compiling...
 g++ -o src/tracker/tracker.exe src/tracker/tracker.cpp src/tracker/include/feature.cpp src/tracker/include/request.cpp src/tracker/include/command.cpp -lws2_32

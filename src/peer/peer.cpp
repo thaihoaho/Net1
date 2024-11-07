@@ -3,13 +3,14 @@
 
 int main(int argc, char *argv[])
 {
-
+    bool logined = false;
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
     {
         cout << "WSAStartup failed: " << endl;
         return 1;
     }
+a:
     std::cout << "Type \"register\" or \"login\" or \"help\" to continue" << std::endl;
     while (true)
     {
@@ -104,9 +105,12 @@ int main(int argc, char *argv[])
         }
     }
     // Listen thread to listen all request of another peer
-    listenSock = init((char *)LISTEN_IP, LISTEN_PORT);
-    thread(listenRequest).detach();
-
+    if (!logined)
+    {
+        listenSock = init((char *)LISTEN_IP, LISTEN_PORT);
+        thread(listenRequest).detach();
+        logined = true;
+    }
     // Command-shell interpreter
     printf("Type \"help\" to get infomation\n");
     while (true)
@@ -188,7 +192,7 @@ int main(int argc, char *argv[])
             std::vector<std::thread> threads(fileNames.size());
             for (int i = 0; i < fileNames.size(); i++)
             {
-                threads[i] = std::thread(sendRequest,const_cast<char *>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, s4, 1, fileNames[i]);
+                threads[i] = std::thread(sendRequest, const_cast<char *>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, s4, 1, fileNames[i]);
             }
 
             for (auto &t : threads)
@@ -208,6 +212,7 @@ int main(int argc, char *argv[])
             strcat(request, " ");
             strcat(request, to_string(LISTEN_PORT).c_str());
             sendRequest(const_cast<char *>(SERVER_LISTEN_IP), SERVER_LISTEN_PORT, request, 0);
+            goto a;
         }
         else
         {

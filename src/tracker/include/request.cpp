@@ -75,7 +75,8 @@ void listenRequest(sockInfo *listenSock)
             std::ofstream outfile("sign.txt", std::ios::app);
             if (outfile.is_open())
             {
-                outfile << client_listen_ip <<" "<< client_listen_port << "\n" << password << "\n";
+                outfile << client_listen_ip << " " << client_listen_port << "\n"
+                        << password << "\n";
                 outfile.close();
             }
             else
@@ -96,7 +97,6 @@ void listenRequest(sockInfo *listenSock)
             }
 
             printf("-------Receive SIGNIN request from %s:%i-------\n", client_listen_ip, client_listen_port);
-
 
             bool check = true;
             mtx.lock();
@@ -131,7 +131,6 @@ void listenRequest(sockInfo *listenSock)
 
             printf("-------Receive SIGNOUT request from %s:%i-------\n", client_listen_ip, client_listen_port);
 
-
             mtx.lock();
             // check in list_actice_peer to remove it
             bool isLogin = false;
@@ -154,7 +153,15 @@ void listenRequest(sockInfo *listenSock)
                     if (!strcmp((*vect)[in].first, client_listen_ip) && client_listen_port == (*vect)[in].second)
                     {
                         if (size == 1)
+                        {
+                            for(int i = 0 ; i <= listmap.size();i++){
+                                if(!strcmp(listmap[i]->hashinfo,(iter.first).c_str()))
+                                {
+                                    listmap.erase(listmap.begin()+i);
+                                }
+                            }
                             vect->clear();
+                        }
                         else
                             vect->erase(vect->begin() + in);
                         break;

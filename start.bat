@@ -19,7 +19,7 @@ start cmd /k tracker.bat
 start cmd /k "call peer.bat peer"
 start cmd /k "call peer.bat peerB"
 start cmd /k "call peer.bat peerC"
-@REM start cmd /k "call peer.bat peerD"
+start cmd /k "call peer.bat peerD"
 
                 
 :print_ascii
